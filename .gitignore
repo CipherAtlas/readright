@@ -12,5 +12,6 @@ agents.md
 **/AGENTS.md
 **/agents.md
 .codex-screenshots/
+audit/
 data/topics/*.json
 !data/topics/.gitkeep

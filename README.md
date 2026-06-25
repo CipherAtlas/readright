@@ -30,12 +30,10 @@ Generated review files are saved in `data/topics`. Canvas files and version hist
 ## Run Locally
 
 ```bash
-npm install
-npm run api
-npm run dev
+./run.sh
 ```
 
-Then open the Vite URL shown in the terminal.
+`run.sh` installs dependencies if needed, builds the app, starts the local server, and prints the URL to open. By default, ReadRight runs at `http://localhost:8787`.
 
 Open **Settings** in the top bar before building live maps. You can either:
 
@@ -43,13 +41,6 @@ Open **Settings** in the top bar before building live maps. You can either:
 - Choose Codex CLI after installing Codex and running `codex login` on the same machine.
 
 The default `REVIEW_ENGINE=auto` uses the OpenAI API when a key is configured and otherwise falls back to Codex CLI.
-
-For a production-style local run:
-
-```bash
-npm run build
-npm start
-```
 
 ## Project Notes
 
@@ -59,4 +50,5 @@ ReadRight is a research and evidence-organization tool. It is not a medical diag
 
 - Commit `.env.example`, not `.env`.
 - `data/topics/*.json` is ignored so generated reviews stay local.
+- `audit/` is ignored so visual QA artifacts stay local.
 - Users need their own OpenAI API key or their own local Codex login.
