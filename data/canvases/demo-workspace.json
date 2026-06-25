@@ -1,0 +1,11 @@
+{
+  "id": "demo-workspace",
+  "topicId": "breathwork-anxiety",
+  "query": "Daily magnesium improves sleep quality.",
+  "view": "overview",
+  "selectedBranchId": "support-sleep-latency",
+  "selectedReasonId": "faster-onset",
+  "nodes": [],
+  "arrows": [],
+  "updatedAt": "2026-06-24T19:28:19.772Z"
+}

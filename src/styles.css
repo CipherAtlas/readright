@@ -1,0 +1,131 @@
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-surface: #f4efe3;
+  --color-panel: #fffdf7;
+  --color-text: #10100e;
+  --color-muted: rgba(16, 16, 14, 0.58);
+  --color-primary: #4c7d72;
+  --color-accent: #d34f32;
+  --color-warning: #d8a729;
+  --color-border: rgba(16, 16, 14, 0.1);
+  --shadow-soft: 0 18px 70px rgba(16, 16, 14, 0.08);
+  color: #10100e;
+  background: #f4efe3;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: #f4efe3;
+}
+
+body {
+  min-width: 320px;
+  margin: 0;
+  background: #f7f4ec;
+}
+
+button,
+a,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.claim-flow .react-flow__handle {
+  opacity: 0.9;
+}
+
+.claim-flow .react-flow__edges {
+  z-index: 1 !important;
+}
+
+.claim-flow .react-flow__nodes {
+  z-index: 2 !important;
+}
+
+.claim-flow .react-flow__edge-path,
+.claim-flow .react-flow__connection-path {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 1px 0 rgba(255, 253, 247, 0.8));
+}
+
+.claim-flow-branch .react-flow__edges {
+  z-index: 1 !important;
+}
+
+.claim-flow-branch .react-flow__node-argument .react-flow__handle {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.claim-flow .react-flow__node {
+  font-family: inherit;
+  visibility: visible !important;
+}
+
+.claim-flow .react-flow__pane {
+  background:
+    radial-gradient(circle at 24px 24px, rgba(76, 125, 114, 0.045), transparent 22px),
+    linear-gradient(180deg, rgba(255, 253, 247, 0.72), rgba(247, 244, 236, 0.88));
+}
+
+.claim-flow .react-flow__node-manual {
+  visibility: visible !important;
+}
+
+.claim-flow .react-flow__node:focus,
+.claim-flow .react-flow__node:focus-visible {
+  outline: none;
+}
+
+.claim-flow .react-flow__controls,
+.flow-controls {
+  overflow: hidden;
+  border: 1px solid rgba(16, 16, 14, 0.1);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 12px 34px rgba(16, 16, 14, 0.08);
+}
+
+.claim-flow .react-flow__controls-button {
+  border-bottom: 1px solid rgba(16, 16, 14, 0.08);
+  background: transparent;
+  color: rgba(16, 16, 14, 0.72);
+}
+
+.flow-minimap {
+  right: 24px !important;
+  bottom: 28px !important;
+  width: 250px !important;
+  height: 138px !important;
+  overflow: hidden;
+  border: 1px solid rgba(16, 16, 14, 0.1);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 14px 34px rgba(16, 16, 14, 0.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "id": "ayurvedic-medicine-anxiety",
+  "versions": [
+    {
+      "id": "v-1-20260624213335058",
+      "versionNumber": 1,
+      "createdAt": "2026-06-24T21:33:35.058Z",
+      "label": "Version 1",
+      "summary": "0 elements · 0 arrows",
+      "canvas": {
+        "id": "ayurvedic-medicine-anxiety",
+        "topicId": "ayurvedic-medicine-anxiety",
+        "query": "Ayurvedic medicine helps with anxiety",
+        "view": "overview",
+        "selectedBranchId": "c1-broad-ayurvedic-medicine-anxiety",
+        "selectedReasonId": "c1-broad-ayurvedic-medicine-anxiety-population-fit",
+        "nodes": [],
+        "arrows": [],
+        "updatedAt": "2026-06-24T21:33:35.058Z"
+      }
+    }
+  ]
+}

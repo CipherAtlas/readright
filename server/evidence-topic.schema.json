@@ -1,0 +1,543 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "query",
+    "generatedAt",
+    "reviewer",
+    "frameworkVersion",
+    "verdict",
+    "claims",
+    "sources"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Stable kebab-case topic id."
+    },
+    "query": {
+      "type": "string",
+      "description": "The topic, claim, or article being reviewed."
+    },
+    "generatedAt": {
+      "type": "string",
+      "description": "ISO-8601 timestamp for this artifact."
+    },
+    "reviewer": {
+      "type": "string",
+      "enum": [
+        "codex",
+        "openai_api"
+      ]
+    },
+    "frameworkVersion": {
+      "type": "string",
+      "enum": [
+        "mhcif-0.3-codex"
+      ]
+    },
+    "verdict": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "summary",
+        "confidence",
+        "responsibleWording"
+      ],
+      "properties": {
+        "summary": {
+          "type": "string",
+          "description": "Conservative overall assessment."
+        },
+        "confidence": {
+          "type": "string",
+          "enum": [
+            "high",
+            "moderate",
+            "low",
+            "very_low",
+            "insufficient"
+          ]
+        },
+        "responsibleWording": {
+          "type": "string",
+          "description": "A safer wording that matches the evidence."
+        }
+      }
+    },
+    "claims": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "claim",
+          "normalizedClaim",
+          "direction",
+          "evidenceCertainty",
+          "overstatementRisk",
+          "evidenceGap",
+          "effectMagnitude",
+          "durability",
+          "safetySignals",
+          "citationFidelitySignals",
+          "populationMatch",
+          "interventionMatch",
+          "outcomeMatch",
+          "comparatorMatch",
+          "reasoning",
+          "sourceIds",
+          "frameworkSignals",
+          "reviewerNote"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "claim": {
+            "type": "string"
+          },
+          "normalizedClaim": {
+            "type": "string"
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "supports",
+              "supports_narrower",
+              "mixed",
+              "against",
+              "insufficient",
+              "misleading",
+              "marketing_overreach"
+            ]
+          },
+          "evidenceCertainty": {
+            "type": "string",
+            "enum": [
+              "high",
+              "moderate",
+              "low",
+              "very_low",
+              "insufficient"
+            ]
+          },
+          "overstatementRisk": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ]
+          },
+          "evidenceGap": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "summary",
+              "missingEvidence",
+              "impact"
+            ],
+            "properties": {
+              "summary": {
+                "type": "string",
+                "description": "Specific evidence gap that limits the claim as written."
+              },
+              "missingEvidence": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "no_direct_trials",
+                    "small_samples",
+                    "short_follow_up",
+                    "weak_comparators",
+                    "population_mismatch",
+                    "intervention_mismatch",
+                    "outcome_mismatch",
+                    "safety_missing",
+                    "effect_size_unclear",
+                    "replication_missing",
+                    "implementation_gap"
+                  ]
+                }
+              },
+              "impact": {
+                "type": "string",
+                "enum": [
+                  "low",
+                  "medium",
+                  "high"
+                ],
+                "description": "How strongly the gap limits the public-facing claim."
+              }
+            }
+          },
+          "effectMagnitude": {
+            "type": "string",
+            "enum": [
+              "none",
+              "small",
+              "moderate",
+              "large",
+              "unclear"
+            ]
+          },
+          "durability": {
+            "type": "string",
+            "enum": [
+              "immediate",
+              "short_term",
+              "medium_term",
+              "long_term",
+              "unclear"
+            ]
+          },
+          "safetySignals": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "adverseEvents",
+              "dropout",
+              "symptomWorsening",
+              "contraindications",
+              "crisisEscalation",
+              "replacementOfCareRisk"
+            ],
+            "properties": {
+              "adverseEvents": {
+                "type": "string",
+                "enum": [
+                  "adequately_addressed",
+                  "partly_addressed",
+                  "missing",
+                  "risk_flagged",
+                  "not_applicable"
+                ]
+              },
+              "dropout": {
+                "type": "string",
+                "enum": [
+                  "adequately_addressed",
+                  "partly_addressed",
+                  "missing",
+                  "risk_flagged",
+                  "not_applicable"
+                ]
+              },
+              "symptomWorsening": {
+                "type": "string",
+                "enum": [
+                  "adequately_addressed",
+                  "partly_addressed",
+                  "missing",
+                  "risk_flagged",
+                  "not_applicable"
+                ]
+              },
+              "contraindications": {
+                "type": "string",
+                "enum": [
+                  "adequately_addressed",
+                  "partly_addressed",
+                  "missing",
+                  "risk_flagged",
+                  "not_applicable"
+                ]
+              },
+              "crisisEscalation": {
+                "type": "string",
+                "enum": [
+                  "adequately_addressed",
+                  "partly_addressed",
+                  "missing",
+                  "risk_flagged",
+                  "not_applicable"
+                ]
+              },
+              "replacementOfCareRisk": {
+                "type": "string",
+                "enum": [
+                  "adequately_addressed",
+                  "partly_addressed",
+                  "missing",
+                  "risk_flagged",
+                  "not_applicable"
+                ]
+              }
+            }
+          },
+          "citationFidelitySignals": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "wrongPopulation",
+              "wrongIntervention",
+              "wrongOutcome",
+              "mechanismToTreatmentLeap",
+              "correlationToCausationLeap",
+              "durationOverreach",
+              "limitationOmitted"
+            ],
+            "properties": {
+              "wrongPopulation": {
+                "type": "string",
+                "enum": [
+                  "not_found",
+                  "possible",
+                  "present",
+                  "not_applicable"
+                ]
+              },
+              "wrongIntervention": {
+                "type": "string",
+                "enum": [
+                  "not_found",
+                  "possible",
+                  "present",
+                  "not_applicable"
+                ]
+              },
+              "wrongOutcome": {
+                "type": "string",
+                "enum": [
+                  "not_found",
+                  "possible",
+                  "present",
+                  "not_applicable"
+                ]
+              },
+              "mechanismToTreatmentLeap": {
+                "type": "string",
+                "enum": [
+                  "not_found",
+                  "possible",
+                  "present",
+                  "not_applicable"
+                ]
+              },
+              "correlationToCausationLeap": {
+                "type": "string",
+                "enum": [
+                  "not_found",
+                  "possible",
+                  "present",
+                  "not_applicable"
+                ]
+              },
+              "durationOverreach": {
+                "type": "string",
+                "enum": [
+                  "not_found",
+                  "possible",
+                  "present",
+                  "not_applicable"
+                ]
+              },
+              "limitationOmitted": {
+                "type": "string",
+                "enum": [
+                  "not_found",
+                  "possible",
+                  "present",
+                  "not_applicable"
+                ]
+              }
+            }
+          },
+          "populationMatch": {
+            "type": "string",
+            "enum": [
+              "direct",
+              "partial",
+              "indirect",
+              "mismatch"
+            ]
+          },
+          "interventionMatch": {
+            "type": "string",
+            "enum": [
+              "direct",
+              "partial",
+              "indirect",
+              "mismatch"
+            ]
+          },
+          "outcomeMatch": {
+            "type": "string",
+            "enum": [
+              "direct",
+              "partial",
+              "indirect",
+              "mismatch"
+            ]
+          },
+          "comparatorMatch": {
+            "type": "string",
+            "enum": [
+              "direct",
+              "partial",
+              "indirect",
+              "mismatch"
+            ]
+          },
+          "reasoning": {
+            "type": "string"
+          },
+          "sourceIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "frameworkSignals": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "reviewerNote": {
+            "type": "string",
+            "description": "Conclusion: what a careful writer, researcher, or product team should do with this claim."
+          }
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "url",
+          "publisher",
+          "authors",
+          "publishedAt",
+          "accessedAt",
+          "sourceType",
+          "studyType",
+          "frameworkFlags",
+          "commercialBias",
+          "safetyCoverage",
+          "shortSnippet",
+          "evidenceCertainty",
+          "stance",
+          "relevance",
+          "year"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "publisher": {
+            "type": "string"
+          },
+          "authors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "publishedAt": {
+            "type": "string",
+            "description": "Publication date if known, otherwise an empty string."
+          },
+          "accessedAt": {
+            "type": "string"
+          },
+          "sourceType": {
+            "type": "string",
+            "enum": [
+              "systematic_review",
+              "meta_analysis",
+              "rct",
+              "observational_study",
+              "guideline",
+              "public_article",
+              "product_page",
+              "other"
+            ]
+          },
+          "studyType": {
+            "type": "string"
+          },
+          "frameworkFlags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "commercialBias": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "unknown"
+            ]
+          },
+          "safetyCoverage": {
+            "type": "string",
+            "enum": [
+              "good",
+              "limited",
+              "missing",
+              "not_applicable"
+            ]
+          },
+          "shortSnippet": {
+            "type": "string",
+            "description": "Short trace note or brief quote fragment. Do not store full article text."
+          },
+          "evidenceCertainty": {
+            "type": "string",
+            "enum": [
+              "high",
+              "moderate",
+              "low",
+              "very_low",
+              "insufficient"
+            ]
+          },
+          "stance": {
+            "type": "string",
+            "enum": [
+              "supports",
+              "supports_narrower",
+              "mixed",
+              "against",
+              "insufficient",
+              "misleading",
+              "marketing_overreach"
+            ]
+          },
+          "relevance": {
+            "type": "string",
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ]
+          },
+          "year": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Publication year if known, otherwise 0."
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "id": "topic-slug",
+  "query": "Topic or claim being reviewed",
+  "generatedAt": "YYYY-MM-DDTHH:mm:ssZ",
+  "reviewer": "codex",
+  "frameworkVersion": "mhcif-0.3-codex",
+  "verdict": {
+    "summary": "Overall conservative assessment of the topic.",
+    "confidence": "low",
+    "responsibleWording": "A safer wording that matches the evidence."
+  },
+  "claims": [
+    {
+      "id": "claim-001",
+      "claim": "Original claim found in article/source/topic.",
+      "normalizedClaim": "Specific, evidence-testable version of the claim.",
+      "direction": "supports_narrower",
+      "evidenceCertainty": "low",
+      "overstatementRisk": "medium",
+      "evidenceGap": {
+        "summary": "Direct evidence is limited by short follow-up and partial population/intervention fit.",
+        "missingEvidence": ["short_follow_up", "population_mismatch", "replication_missing"],
+        "impact": "medium"
+      },
+      "effectMagnitude": "small",
+      "durability": "short_term",
+      "safetySignals": {
+        "adverseEvents": "partly_addressed",
+        "dropout": "partly_addressed",
+        "symptomWorsening": "missing",
+        "contraindications": "missing",
+        "crisisEscalation": "missing",
+        "replacementOfCareRisk": "not_applicable"
+      },
+      "citationFidelitySignals": {
+        "wrongPopulation": "possible",
+        "wrongIntervention": "not_found",
+        "wrongOutcome": "not_found",
+        "mechanismToTreatmentLeap": "not_found",
+        "correlationToCausationLeap": "not_found",
+        "durationOverreach": "possible",
+        "limitationOmitted": "possible"
+      },
+      "populationMatch": "partial",
+      "interventionMatch": "partial",
+      "outcomeMatch": "direct",
+      "comparatorMatch": "partial",
+      "reasoning": "Why the claim was classified this way.",
+      "sourceIds": ["src-001"],
+      "frameworkSignals": [
+        "MHCIF: intervention fit is partial",
+        "GRADE: downgraded for indirectness"
+      ],
+      "reviewerNote": "What a careful writer/researcher/product team should do with this claim."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-001",
+      "title": "Source title",
+      "url": "https://example.com/source",
+      "publisher": "Publisher",
+      "authors": ["Author Name"],
+      "publishedAt": "YYYY-MM-DD",
+      "accessedAt": "YYYY-MM-DD",
+      "sourceType": "systematic_review",
+      "studyType": "Plain-language source design",
+      "frameworkFlags": ["GRADE", "MHCIF"],
+      "commercialBias": "low",
+      "safetyCoverage": "limited",
+      "shortSnippet": "Short trace note, not copied article text.",
+      "evidenceCertainty": "low",
+      "stance": "supports_narrower",
+      "relevance": "high",
+      "year": 2026
+    }
+  ]
+}

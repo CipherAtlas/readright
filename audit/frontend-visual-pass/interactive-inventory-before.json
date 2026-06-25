@@ -1,0 +1,722 @@
+[
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 0,
+    "rect": {
+      "h": 42,
+      "w": 105,
+      "x": 746,
+      "y": 15
+    },
+    "tag": "button",
+    "text": "Search",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 1,
+    "rect": {
+      "h": 42,
+      "w": 97,
+      "x": 863,
+      "y": 15
+    },
+    "tag": "button",
+    "text": "Share",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 2,
+    "rect": {
+      "h": 42,
+      "w": 102,
+      "x": 972,
+      "y": 15
+    },
+    "tag": "button",
+    "text": "Export",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 3,
+    "rect": {
+      "h": 60,
+      "w": 108,
+      "x": 1087,
+      "y": 6
+    },
+    "tag": "button",
+    "text": "New analysis",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "Dashboard",
+    "disabled": false,
+    "index": 4,
+    "rect": {
+      "h": 48,
+      "w": 48,
+      "x": 16,
+      "y": 168
+    },
+    "tag": "button",
+    "text": "Dashboard",
+    "title": "Dashboard",
+    "type": "button"
+  },
+  {
+    "aria": "Analyses",
+    "disabled": false,
+    "index": 5,
+    "rect": {
+      "h": 48,
+      "w": 48,
+      "x": 16,
+      "y": 228
+    },
+    "tag": "button",
+    "text": "Analyses",
+    "title": "Analyses",
+    "type": "button"
+  },
+  {
+    "aria": "Evidence",
+    "disabled": false,
+    "index": 6,
+    "rect": {
+      "h": 48,
+      "w": 48,
+      "x": 16,
+      "y": 288
+    },
+    "tag": "button",
+    "text": "Evidence",
+    "title": "Evidence",
+    "type": "button"
+  },
+  {
+    "aria": "Compare",
+    "disabled": false,
+    "index": 7,
+    "rect": {
+      "h": 48,
+      "w": 48,
+      "x": 16,
+      "y": 348
+    },
+    "tag": "button",
+    "text": "Compare",
+    "title": "Compare",
+    "type": "button"
+  },
+  {
+    "aria": "Saved",
+    "disabled": false,
+    "index": 8,
+    "rect": {
+      "h": 48,
+      "w": 48,
+      "x": 16,
+      "y": 408
+    },
+    "tag": "button",
+    "text": "Saved",
+    "title": "Saved",
+    "type": "button"
+  },
+  {
+    "aria": "Settings",
+    "disabled": false,
+    "index": 9,
+    "rect": {
+      "h": 48,
+      "w": 48,
+      "x": 16,
+      "y": 468
+    },
+    "tag": "button",
+    "text": "Settings",
+    "title": "Settings",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 10,
+    "rect": {
+      "h": 40,
+      "w": 40,
+      "x": 20,
+      "y": 644
+    },
+    "tag": "button",
+    "text": "",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 11,
+    "rect": {
+      "h": 40,
+      "w": 40,
+      "x": 20,
+      "y": 696
+    },
+    "tag": "button",
+    "text": "",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 12,
+    "rect": {
+      "h": 24,
+      "w": 24,
+      "x": 327,
+      "y": 94
+    },
+    "tag": "button",
+    "text": "",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 13,
+    "rect": {
+      "h": 32,
+      "w": 119,
+      "x": 105,
+      "y": 145
+    },
+    "tag": "button",
+    "text": "Claim",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 14,
+    "rect": {
+      "h": 32,
+      "w": 119,
+      "x": 228,
+      "y": 145
+    },
+    "tag": "button",
+    "text": "Article",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 15,
+    "rect": {
+      "h": 144,
+      "w": 217,
+      "x": 117,
+      "y": 215
+    },
+    "tag": "textarea",
+    "text": "Daily magnesium improves sleep quality.",
+    "title": "",
+    "type": ""
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 16,
+    "rect": {
+      "h": 50,
+      "w": 251,
+      "x": 100,
+      "y": 419
+    },
+    "tag": "button",
+    "text": "Health",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 17,
+    "rect": {
+      "h": 50,
+      "w": 251,
+      "x": 100,
+      "y": 481
+    },
+    "tag": "button",
+    "text": "Human studies",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 18,
+    "rect": {
+      "h": 50,
+      "w": 251,
+      "x": 100,
+      "y": 543
+    },
+    "tag": "button",
+    "text": "Last 10 years",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 19,
+    "rect": {
+      "h": 56,
+      "w": 251,
+      "x": 100,
+      "y": 613
+    },
+    "tag": "button",
+    "text": "Build map",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 20,
+    "rect": {
+      "h": 16,
+      "w": 63,
+      "x": 288,
+      "y": 703
+    },
+    "tag": "button",
+    "text": "Refresh",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 21,
+    "rect": {
+      "h": 16,
+      "w": 33,
+      "x": 318,
+      "y": 813
+    },
+    "tag": "button",
+    "text": "Reset",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 22,
+    "rect": {
+      "h": 34,
+      "w": 41,
+      "x": 100,
+      "y": 843
+    },
+    "tag": "button",
+    "text": "All",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 23,
+    "rect": {
+      "h": 34,
+      "w": 45,
+      "x": 149,
+      "y": 843
+    },
+    "tag": "button",
+    "text": "For",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 24,
+    "rect": {
+      "h": 34,
+      "w": 70,
+      "x": 202,
+      "y": 843
+    },
+    "tag": "button",
+    "text": "Against",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 25,
+    "rect": {
+      "h": 34,
+      "w": 78,
+      "x": 100,
+      "y": 885
+    },
+    "tag": "button",
+    "text": "Evidence",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 26,
+    "rect": {
+      "h": 34,
+      "w": 101,
+      "x": 186,
+      "y": 885
+    },
+    "tag": "button",
+    "text": "Assumptions",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 27,
+    "rect": {
+      "h": 34,
+      "w": 91,
+      "x": 100,
+      "y": 927
+    },
+    "tag": "button",
+    "text": "Unresolved",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 28,
+    "rect": {
+      "h": 45,
+      "w": 225,
+      "x": 113,
+      "y": 1038
+    },
+    "tag": "button",
+    "text": "Show counts",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 29,
+    "rect": {
+      "h": 45,
+      "w": 225,
+      "x": 113,
+      "y": 1083
+    },
+    "tag": "button",
+    "text": "Group similar",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 30,
+    "rect": {
+      "h": 45,
+      "w": 225,
+      "x": 113,
+      "y": 1128
+    },
+    "tag": "button",
+    "text": "Evidence drawer",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 31,
+    "rect": {
+      "h": 62,
+      "w": 143,
+      "x": 584,
+      "y": 377
+    },
+    "tag": "button",
+    "text": "Daily magnesium improves sleep quality. Possible",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 32,
+    "rect": {
+      "h": 73,
+      "w": 123,
+      "x": 410,
+      "y": 291
+    },
+    "tag": "button",
+    "text": "Improves sleep latency 4 reasons 2 studies 1 assumption",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 33,
+    "rect": {
+      "h": 73,
+      "w": 123,
+      "x": 410,
+      "y": 379
+    },
+    "tag": "button",
+    "text": "Enhances sleep duration 3 reasons 3 studies 1 assumption",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 34,
+    "rect": {
+      "h": 73,
+      "w": 123,
+      "x": 410,
+      "y": 467
+    },
+    "tag": "button",
+    "text": "Improves sleep quality metrics 4 studies 4 studies 1 assumption",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 35,
+    "rect": {
+      "h": 73,
+      "w": 123,
+      "x": 764,
+      "y": 291
+    },
+    "tag": "button",
+    "text": "Limited effect size in most studies 4 studies 4 studies 1 assumption",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 36,
+    "rect": {
+      "h": 73,
+      "w": 123,
+      "x": 764,
+      "y": 379
+    },
+    "tag": "button",
+    "text": "Publication bias concerns 2 reasons 2 studies 1 assumption",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 37,
+    "rect": {
+      "h": 73,
+      "w": 123,
+      "x": 764,
+      "y": 467
+    },
+    "tag": "button",
+    "text": "Not effective for everyone 3 reasons 3 studies 2 assumptions",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "Zoom In",
+    "disabled": false,
+    "index": 38,
+    "rect": {
+      "h": 26,
+      "w": 26,
+      "x": 389,
+      "y": 666
+    },
+    "tag": "button",
+    "text": "Zoom In",
+    "title": "Zoom In",
+    "type": "button"
+  },
+  {
+    "aria": "Zoom Out",
+    "disabled": false,
+    "index": 39,
+    "rect": {
+      "h": 26,
+      "w": 26,
+      "x": 389,
+      "y": 692
+    },
+    "tag": "button",
+    "text": "Zoom Out",
+    "title": "Zoom Out",
+    "type": "button"
+  },
+  {
+    "aria": "Fit View",
+    "disabled": false,
+    "index": 40,
+    "rect": {
+      "h": 26,
+      "w": 26,
+      "x": 389,
+      "y": 718
+    },
+    "tag": "button",
+    "text": "Fit View",
+    "title": "Fit View",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 41,
+    "rect": {
+      "h": 40,
+      "w": 127,
+      "x": 522,
+      "y": 97
+    },
+    "tag": "button",
+    "text": "Overview",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 42,
+    "rect": {
+      "h": 40,
+      "w": 112,
+      "x": 649,
+      "y": 97
+    },
+    "tag": "button",
+    "text": "Branch",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 43,
+    "rect": {
+      "h": 40,
+      "w": 104,
+      "x": 522,
+      "y": 137
+    },
+    "tag": "button",
+    "text": "Focus",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 44,
+    "rect": {
+      "h": 40,
+      "w": 49,
+      "x": 517,
+      "y": 693
+    },
+    "tag": "button",
+    "text": "",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 45,
+    "rect": {
+      "h": 40,
+      "w": 49,
+      "x": 660,
+      "y": 693
+    },
+    "tag": "button",
+    "text": "",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 46,
+    "rect": {
+      "h": 40,
+      "w": 49,
+      "x": 709,
+      "y": 693
+    },
+    "tag": "button",
+    "text": "",
+    "title": "",
+    "type": "button"
+  },
+  {
+    "aria": "",
+    "disabled": false,
+    "index": 47,
+    "rect": {
+      "h": 40,
+      "w": 48,
+      "x": 758,
+      "y": 693
+    },
+    "tag": "button",
+    "text": "",
+    "title": "",
+    "type": "button"
+  }
+]
