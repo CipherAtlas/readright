@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type Dispatch, type MouseEvent as ReactMouseEvent, type SetStateAction } from "react";
-import { Background, Controls, MarkerType, MiniMap, ReactFlow, type Edge, type ReactFlowInstance } from "@xyflow/react";
+import { Background, Controls, MarkerType, MiniMap, ReactFlow, type Edge, type ReactFlowInstance, type Viewport } from "@xyflow/react";
 import { ArrowUpRight, Check, ChevronDown, ChevronRight, CircleDot, CircleHelp, Copy, Diamond, ExternalLink, FilePlus, FileText, GitBranch, Hand, Highlighter, History, Loader2, MessageCircle, Minus, Pencil, Plus, Redo2, Save, SlidersHorizontal, SquareDashedMousePointer, StickyNote, ThumbsDown, ThumbsUp, Trash2, Type, Undo2, X } from "lucide-react";
 import type { ArgumentNode, ArgumentNodeData, Branch, CanvasContextMenuState, CanvasFlowNode, CanvasTool, CanvasVersionRecord, LaneNodeData, ManualCanvasArrowRecord, ManualCanvasColor, ManualCanvasKind, ManualCanvasNodeRecord, ReasonNode, Workspace, WorkspaceSource, MapView } from "../../types";
 import { canvasShortcutIds, formatShortcut, getShortcutAction, isEditableEventTarget, type ShortcutId, type ShortcutMap } from "../../shortcuts";
@@ -87,6 +87,7 @@ export function GraphCanvas({
 }) {
   const canvasSectionRef = useRef<HTMLElement>(null);
   const [flow, setFlow] = useState<ReactFlowInstance<CanvasFlowNode, Edge> | null>(null);
+  const [canvasZoomPercent, setCanvasZoomPercent] = useState(100);
 	  const [openCanvasMenu, setOpenCanvasMenu] = useState<"add" | "tools" | "history" | null>(null);
 	  const [inlineBranchOpen, setInlineBranchOpen] = useState(false);
 		  const [branchPickerOpen, setBranchPickerOpen] = useState(false);
@@ -122,6 +123,21 @@ export function GraphCanvas({
     ["decision", Diamond, "Decision"],
     ["connector", CircleDot, "Circle"],
   ] as const;
+  const flowDefaultViewport = useMemo<Viewport>(
+    () =>
+      view === "branch" || view === "evidence"
+        ? { x: 90, y: 38, zoom: 0.72 }
+        : { x: 35, y: 35, zoom: 0.83 },
+    [view]
+  );
+
+  const updateCanvasZoomPercent = useCallback((zoom: number) => {
+    setCanvasZoomPercent(Math.round(zoom * 100));
+  }, []);
+
+  useEffect(() => {
+    updateCanvasZoomPercent(flowDefaultViewport.zoom);
+  }, [flowDefaultViewport.zoom, updateCanvasZoomPercent]);
 
   const findOpenCanvasScreenPoint = useCallback(
     ({
@@ -804,11 +820,6 @@ export function GraphCanvas({
   const contextMenuBranchTarget = canvasContextMenu
     ? branchTargetForNode(canvasContextMenu.nodeId)
     : null;
-	  const flowDefaultViewport =
-	    view === "branch" || view === "evidence"
-	        ? { x: 90, y: 38, zoom: 0.72 }
-	        : { x: 35, y: 35, zoom: 0.83 };
-
   const copyCanvasNodeText = useCallback(
     async (nodeId: string) => {
       const manualNode = manualCanvasNodes.find((node) => node.id === nodeId);
@@ -1021,7 +1032,10 @@ export function GraphCanvas({
 	          nodesDraggable={false}
           nodesFocusable
           nodeTypes={nodeTypes}
-          onInit={setFlow}
+          onInit={(instance) => {
+            setFlow(instance);
+            updateCanvasZoomPercent(instance.getZoom());
+          }}
           onNodesChange={(changes) => {
             setManualCanvasNodes((current) => {
               let changed = false;
@@ -1052,6 +1066,7 @@ export function GraphCanvas({
             }
           }}
 		          onNodeContextMenu={openNodeContextMenu}
+          onViewportChange={(viewport) => updateCanvasZoomPercent(viewport.zoom)}
 		          onPaneClick={() => {
 		            setCanvasContextMenu(null);
 		            if (canvasTool !== "arrow") setSelectedManualNodeId("");
@@ -1876,7 +1891,7 @@ export function GraphCanvas({
         <button aria-label="Zoom out" className="border-b border-ink/10 px-3.5 py-3 hover:bg-ink/[0.04]" onClick={() => flow?.zoomOut()} type="button">
           <Minus className="h-4 w-4" />
         </button>
-        <span className="border-b border-ink/10 px-2 py-2 text-xs font-semibold">100%</span>
+        <span className="border-b border-ink/10 px-2 py-2 text-xs font-semibold">{canvasZoomPercent}%</span>
         <button aria-label="Zoom in" className="border-b border-ink/10 px-3.5 py-3 hover:bg-ink/[0.04]" onClick={() => flow?.zoomIn()} type="button">
           <Plus className="h-4 w-4" />
         </button>
