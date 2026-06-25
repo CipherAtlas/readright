@@ -89,7 +89,7 @@ The demo canvas file `data/canvases/demo-workspace.json` is intentionally clean 
 
 ## Current Frontend State
 
-Primary file: `src/App.tsx`.
+Primary UI root: `src/App.tsx`. Keep it focused on app state and composition; place reusable UI, canvas pieces, export logic, type definitions, and pure helpers under `src/features/readright`.
 
 The simplified UI currently has:
 
@@ -198,6 +198,7 @@ Recorded QA:
 
 ## Agent Rules For Future Work
 
+- `src/App.tsx` should remain a thin composition/root file. Do not add large features, business logic, API logic, or bulky JSX directly to `App.tsx`. New functionality should be placed in focused helper files such as components, hooks, utilities, services, or type files, then imported and composed from `App.tsx`.
 - Preserve the local-first JSON workflow unless the task clearly needs a database.
 - Keep review artifacts as independent JSON files in `data/topics`.
 - Keep canvas saves versioned locally.
