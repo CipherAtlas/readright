@@ -6,6 +6,7 @@ import path from "node:path";
 import { spawn } from "node:child_process";
 import { artifactFilename, runMhcifReview } from "./mhcif-runner.mjs";
 import { runCodexMhcifReview } from "./codex-runner.mjs";
+import { existingCodexCandidates } from "./codex-path.mjs";
 
 const ROOT = process.cwd();
 const PORT = Number(process.env.PORT || 8787);
@@ -155,37 +156,77 @@ function codexBin() {
 
 function checkCodexCli() {
   return new Promise((resolve) => {
-    const child = spawn(codexBin(), ["--version"], {
-      cwd: ROOT,
-      env: process.env,
-      stdio: ["ignore", "pipe", "pipe"],
-    });
-    let stdout = "";
-    let stderr = "";
-    const timeout = setTimeout(() => {
-      child.kill("SIGTERM");
-      resolve({ available: false, version: "", error: "Codex CLI check timed out." });
-    }, 5000);
+    const candidates = existingCodexCandidates(codexBin());
+    let index = 0;
 
-    child.stdout.on("data", (chunk) => {
-      stdout += chunk.toString();
-    });
-    child.stderr.on("data", (chunk) => {
-      stderr += chunk.toString();
-    });
-    child.on("error", (error) => {
-      clearTimeout(timeout);
-      resolve({ available: false, version: "", error: error.message });
-    });
-    child.on("close", (code) => {
-      clearTimeout(timeout);
-      const output = (stdout || stderr).trim();
-      resolve({
-        available: code === 0,
-        version: code === 0 ? output.split(/\r?\n/)[0] || "Available" : "",
-        error: code === 0 ? "" : output || `Codex CLI exited with ${code}.`,
+    const tryNext = () => {
+      const command = candidates[index];
+      if (!command) {
+        resolve({
+          available: false,
+          version: "",
+          command: "",
+          error: "Codex CLI was not found. Install Codex or paste the full path to the codex binary.",
+          candidates,
+        });
+        return;
+      }
+
+      const child = spawn(command, ["--version"], {
+        cwd: ROOT,
+        env: process.env,
+        stdio: ["ignore", "pipe", "pipe"],
       });
-    });
+      let stdout = "";
+      let stderr = "";
+      let retriedAfterError = false;
+      const timeout = setTimeout(() => {
+        child.kill("SIGTERM");
+        resolve({
+          available: false,
+          version: "",
+          command,
+          error: "Codex CLI check timed out.",
+          candidates,
+        });
+      }, 5000);
+
+      child.stdout.on("data", (chunk) => {
+        stdout += chunk.toString();
+      });
+      child.stderr.on("data", (chunk) => {
+        stderr += chunk.toString();
+      });
+      child.on("error", (error) => {
+        clearTimeout(timeout);
+        if (error.code === "ENOENT") {
+          retriedAfterError = true;
+          index += 1;
+          tryNext();
+          return;
+        }
+        resolve({ available: false, version: "", command, error: error.message, candidates });
+      });
+      child.on("close", (code) => {
+        clearTimeout(timeout);
+        if (retriedAfterError) return;
+        const output = (stdout || stderr).trim();
+        if (Number(code) === -2 && index + 1 < candidates.length) {
+          index += 1;
+          tryNext();
+          return;
+        }
+        resolve({
+          available: code === 0,
+          version: code === 0 ? output.split(/\r?\n/)[0] || "Available" : "",
+          command,
+          error: code === 0 ? "" : output || `Codex CLI exited with ${code}.`,
+          candidates,
+        });
+      });
+    };
+
+    tryNext();
   });
 }
 

@@ -5,6 +5,11 @@ cd "$(dirname "$0")"
 
 BACKEND_PORT=8787
 BACKEND_PID=""
+CODEX_APP_BIN="/Applications/Codex.app/Contents/Resources"
+
+if [ -d "$CODEX_APP_BIN" ]; then
+  export PATH="$CODEX_APP_BIN:$PATH"
+fi
 
 if ! command -v npm >/dev/null 2>&1; then
   echo "npm is required but was not found in PATH." >&2

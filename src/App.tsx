@@ -132,6 +132,8 @@ type RuntimeSettings = {
     available: boolean;
     version: string;
     error: string;
+    command?: string;
+    candidates?: string[];
   };
   envFile: string;
 };
@@ -4301,6 +4303,14 @@ function SettingsModal({
   const activeEngineLabel =
     settings?.activeEngine === "openai_api" ? "OpenAI API" : "Codex CLI";
   const codexConnected = Boolean(settings?.codexCli.available);
+  const codexCommand = settings?.codexCli.command || codexBin || "codex";
+  const codexNotFound = !codexConnected && /not found|ENOENT/i.test(settings?.codexCli.error || "");
+  const codexStatusLabel = codexConnected ? "Connected" : codexNotFound ? "Not found" : "Needs login";
+  const codexStatusMessage = codexConnected
+    ? `${settings?.codexCli.version || "Codex is available."} · ${codexCommand}`
+    : codexNotFound
+      ? "The server cannot find the Codex binary. Install Codex or paste the full path below."
+      : settings?.codexCli.error || "Codex was found, but the CLI needs attention before it can run reviews.";
   const canSubmit = !isSaving && !isLoading;
 
   return (
@@ -4477,9 +4487,7 @@ function SettingsModal({
                 <div>
                   <h3 className="text-base font-semibold">Codex CLI</h3>
                   <p className="mt-1 text-xs font-semibold leading-5 text-ink/48">
-                    {codexConnected
-                      ? settings?.codexCli.version || "Codex is available."
-                      : settings?.codexCli.error || "Codex was not found on PATH."}
+                    {codexStatusMessage}
                   </p>
                 </div>
                 <span
@@ -4490,7 +4498,7 @@ function SettingsModal({
                       : "border-[#d34f32]/25 bg-[#fff0ea] text-[#b94736]"
                   )}
                 >
-                  {codexConnected ? "Connected" : "Check login"}
+                  {codexStatusLabel}
                 </span>
               </div>
 
@@ -4501,9 +4509,20 @@ function SettingsModal({
                 <input
                   className="w-full rounded-md border border-ink/10 bg-white px-3 py-3 text-sm font-semibold outline-none focus:border-[#5d855e]/55"
                   onChange={(event) => setCodexBin(event.target.value)}
+                  placeholder="/Applications/Codex.app/Contents/Resources/codex"
                   value={codexBin}
                 />
               </label>
+
+              {settings?.codexCli.command && settings.codexCli.command !== codexBin && (
+                <button
+                  className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-md border border-[#5d855e]/20 bg-[#eef6eb] px-3 py-2.5 text-sm font-semibold text-[#31583a] transition hover:bg-[#e4f0df]"
+                  onClick={() => setCodexBin(settings.codexCli.command || "codex")}
+                  type="button"
+                >
+                  Use detected path
+                </button>
+              )}
 
               <button
                 className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-md border border-ink/10 bg-white px-3 py-2.5 text-sm font-semibold text-ink/62 transition hover:bg-[#f4f8ef] hover:text-[#31583a]"
@@ -4515,7 +4534,21 @@ function SettingsModal({
               </button>
 
               <div className="mt-4 rounded-md border border-ink/8 bg-[#f7f4ec] p-3 text-xs font-semibold leading-5 text-ink/52">
-                Run <code className="rounded bg-white px-1.5 py-0.5">codex login</code> in a terminal before choosing Codex CLI on another machine.
+                {codexNotFound ? (
+                  <>
+                    On macOS with Codex installed, this is usually{" "}
+                    <code className="rounded bg-white px-1.5 py-0.5">
+                      /Applications/Codex.app/Contents/Resources/codex
+                    </code>
+                    . Paste that path, save, then refresh.
+                  </>
+                ) : (
+                  <>
+                    If reviews fail after Codex is found, run{" "}
+                    <code className="rounded bg-white px-1.5 py-0.5">codex login</code>
+                    {" "}once in a terminal.
+                  </>
+                )}
               </div>
             </section>
           </div>
