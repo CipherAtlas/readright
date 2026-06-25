@@ -47,6 +47,12 @@ export type SourceType =
   | "rct"
   | "observational_study"
   | "guideline"
+  | "standard"
+  | "technical_report"
+  | "policy_report"
+  | "benchmark"
+  | "field_study"
+  | "dataset"
   | "public_article"
   | "product_page"
   | "other";

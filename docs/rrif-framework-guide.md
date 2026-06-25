@@ -1,16 +1,16 @@
-# MHCIF Framework Guide
+# RRIF Framework Guide
 
-Version: `mhcif-0.3-codex`
+Version: `rrif-0.3`
 
-This document explains the Mental Health Claim Integrity Framework in human terms: what it is for, how to use it, how to improve it, and what mistakes to avoid.
+This document explains the ReadRight Integrity Framework in human terms: what it is for, how to use it, how to improve it, and what mistakes to avoid.
 
-The machine-facing protocol lives in `docs/mhcif-codex-review-protocol.md`. Treat that file as the active review instruction used by Codex Desktop, Codex CLI, and the OpenAI API runner. Treat this guide as the design rationale and improvement manual.
+The machine-facing protocol lives in `docs/rrif-review-protocol.md`. Treat that file as the active review instruction used by ReadRight review runners. Treat this guide as the design rationale and improvement manual.
 
 For the current ReadRight implementation state, UI decisions, local JSON storage, canvas behavior, and agent handoff notes, read `docs/app-progress-for-agents.md`.
 
 ## Purpose
 
-MHCIF exists to answer one question:
+RRIF exists to answer one question:
 
 > What does the available evidence actually allow someone to claim?
 
@@ -30,11 +30,11 @@ A good review should make it clear whether a claim is:
 
 Evidence quality and claim fit are different.
 
-A source can be rigorous but irrelevant to the claim. A trial can be real but too small, short, or indirect for public-facing confidence. A public article can be useful but overstate what the cited study actually found. MHCIF must keep these distinctions separate.
+A source can be rigorous but irrelevant to the claim. A trial can be real but too small, short, or indirect for public-facing confidence. A public article can be useful but overstate what the cited study actually found. RRIF must keep these distinctions separate.
 
 ## Framework Inputs
 
-MHCIF combines established evidence-quality frameworks with mental-health-specific claim checks.
+RRIF combines established evidence-quality frameworks with research-article-specific claim checks.
 
 Established frameworks:
 
@@ -45,11 +45,11 @@ Established frameworks:
 - PRISMA for review reporting quality
 - CONSORT for randomized trial reporting quality
 - STROBE for observational reporting quality
-- DISCERN for public health article quality
+- DISCERN for public health and consumer-facing information quality
 - JAMA benchmarks for authorship, attribution, disclosure, and currency
-- NICE Evidence Standards Framework for digital health products
+- NICE Evidence Standards Framework for digital health and technology products, when relevant
 
-MHCIF-specific criteria:
+RRIF-specific criteria:
 
 - claim specificity
 - population fit
@@ -66,7 +66,7 @@ MHCIF-specific criteria:
 - balance and uncertainty
 - practical usefulness
 
-The established frameworks are inputs. The final direction label comes from MHCIF.
+The established frameworks are inputs. The final direction label comes from RRIF.
 
 ## Review Model
 
@@ -82,7 +82,7 @@ Every review should move through five passes.
    Ask whether the source actually studies the same people, intervention, comparator, outcome, and timeframe implied by the claim.
 
 4. Judge strength and overstatement.
-   Rate certainty conservatively. Separate plausible, preliminary, mechanism-level, and clinically established findings.
+   Rate certainty conservatively. Separate plausible, preliminary, mechanism-level, and established findings.
 
 5. Write the conclusion.
    State what a careful writer, researcher, or product team should do with the claim.
@@ -93,7 +93,7 @@ Use the labels narrowly.
 
 `supports`
 
-The claim is proportionate, direct, replicated, clinically relevant, and not dependent on weak comparators. This should be uncommon.
+The claim is proportionate, direct, replicated, relevant to the stated use case, and not dependent on weak comparators. This should be uncommon.
 
 `supports_narrower`
 
@@ -113,7 +113,7 @@ There is not enough direct evidence to support the claim. This is not the same a
 
 `misleading`
 
-The wording implies stronger evidence, broader applicability, causality, durability, or clinical certainty than the evidence supports.
+The wording implies stronger evidence, broader applicability, causality, durability, or certainty than the evidence supports.
 
 `marketing_overreach`
 
@@ -123,7 +123,7 @@ The claim uses vague, persuasive, commercial, or mechanism-heavy language that c
 
 Default low. Upgrade slowly.
 
-High or moderate certainty should require direct evidence, low risk of bias, consistent results, clinically meaningful outcomes, reasonable comparators, and enough durability to match the claim.
+High or moderate certainty should require direct evidence, low risk of bias, consistent results, meaningful outcomes, reasonable comparators, and enough durability to match the claim.
 
 Do not upgrade certainty because:
 
@@ -143,7 +143,7 @@ Good output:
 
 - names the exact claim being judged
 - rewrites vague claims into testable versions
-- distinguishes short-term symptom effects from clinical treatment
+- distinguishes short-term or proxy effects from durable real-world outcomes
 - separates mechanism evidence from outcome evidence
 - identifies the population actually studied
 - states whether the source supports the exact claim or only a narrower claim
@@ -156,8 +156,8 @@ Good output:
 Weak output:
 
 - ranks sources as simply good or bad
-- treats all anxiety/stress/mood outcomes as interchangeable
-- treats all breathwork/meditation/somatic practices as interchangeable
+- treats related outcomes as interchangeable without checking what was actually measured
+- treats related interventions, exposures, products, or methods as interchangeable
 - quotes paper conclusions without checking methods
 - ignores safety coverage
 - ignores commercial incentives
@@ -165,9 +165,9 @@ Weak output:
 
 ## What Not To Do
 
-Do not use MHCIF as a medical advice engine.
+Do not use RRIF as a domain advice engine.
 
-Do not produce treatment recommendations for individuals. The output can evaluate claims and suggest responsible wording, but it should not tell a user what care to choose.
+Do not produce personal medical, legal, financial, or other high-stakes recommendations for individuals. The output can evaluate claims and suggest responsible wording, but it should not tell a user what decision to make.
 
 Do not bypass access controls.
 
@@ -179,21 +179,21 @@ Store metadata, links, short trace notes, normalized claims, and derived judgmen
 
 Do not collapse different interventions.
 
-Slow breathing, cyclic sighing, box breathing, pranayama, mindfulness, HRV biofeedback, exposure-based breathing retraining, and app-guided programs may be different interventions.
+Similar-sounding treatments, products, behaviors, exposures, methods, models, or programs may be different interventions and should not be collapsed without evidence.
 
 Do not collapse different outcomes.
 
-Stress, state anxiety, trait anxiety, diagnosed anxiety disorder symptoms, panic attacks, HRV, sleep, mood, neural activation, and subjective calm are different outcomes.
+Proxy measures, self-reported outcomes, objective outcomes, intermediate biomarkers, and real-world endpoints are different outcomes.
 
-Do not let mechanism evidence prove clinical efficacy.
+Do not let mechanism evidence prove real-world effectiveness.
 
-Mechanism evidence can support plausibility. It cannot establish that an intervention treats a disorder.
+Mechanism evidence can support plausibility. It cannot establish that an intervention, exposure, model, or product produces the claimed outcome.
 
 Do not let safety silence be treated as safety evidence.
 
 If harms, dropout, contraindications, or deterioration are not discussed, mark safety coverage as limited or missing.
 
-For `mhcif-0.3-codex`, safety is tracked at subtype level. A review should state whether the source or evidence base addresses:
+For `rrif-0.3`, safety is tracked at subtype level. A review should state whether the source or evidence base addresses:
 
 - adverse events
 - dropout or discontinuation
@@ -224,7 +224,7 @@ Use `immediate`, `short_term`, `medium_term`, `long_term`, or `unclear`. Match t
 
 `safetySignals`
 
-Track adverse events, dropout, symptom worsening, contraindications, crisis escalation, and replacement-of-care risk separately. Use `missing` when a clinically relevant safety issue is not discussed, `risk_flagged` when the evidence or claim raises an actual concern, and `not_applicable` only when the subtype genuinely does not apply.
+Track adverse events, dropout, symptom worsening, contraindications, crisis escalation, and replacement-of-care risk separately. Use `missing` when a relevant safety or harm issue is not discussed, `risk_flagged` when the evidence or claim raises an actual concern, and `not_applicable` only when the subtype genuinely does not apply.
 
 `citationFidelitySignals`
 
@@ -237,7 +237,7 @@ Improve by adding sharper decision rules, not more labels for their own sake.
 Good improvements:
 
 - clearer thresholds for direct, partial, indirect, and mismatch ratings
-- examples for common mental-health domains
+- examples across research domains
 - stronger safety and contraindication prompts
 - explicit evidence-gap fields
 - better article-inspection criteria for citation misuse
@@ -255,20 +255,20 @@ Poor improvements:
 
 ## Suggested Additions And Future Versions
 
-Implemented in `mhcif-0.3-codex`:
+Implemented in `rrif-0.3`:
 
-- Evidence gap field per claim. Added in `mhcif-0.3-codex`.
-- Separate `effectMagnitude` field: none, small, moderate, large, unclear. Added in `mhcif-0.3-codex`.
-- Separate `durability` field: immediate, short_term, medium_term, long_term, unclear. Added in `mhcif-0.3-codex`.
-- Citation fidelity subtypes: wrong population, wrong outcome, mechanism-to-treatment leap, correlation-to-causation leap, limitation omitted. Added in `mhcif-0.3-codex`.
-- Safety subtypes: adverse events, dropout, symptom worsening, contraindications, crisis disclaimers, replacement-of-care risk. Added in `mhcif-0.3-codex`.
-- Calibration set of reviewed claims used as regression tests for future prompt/schema changes. Started in `docs/mhcif-calibration-examples.md`.
+- Evidence gap field per claim. Added in `rrif-0.3`.
+- Separate `effectMagnitude` field: none, small, moderate, large, unclear. Added in `rrif-0.3`.
+- Separate `durability` field: immediate, short_term, medium_term, long_term, unclear. Added in `rrif-0.3`.
+- Citation fidelity subtypes: wrong population, wrong outcome, mechanism-to-treatment leap, correlation-to-causation leap, limitation omitted. Added in `rrif-0.3`.
+- Safety subtypes: adverse events, dropout, symptom worsening, contraindications, crisis disclaimers, replacement-of-care risk. Added in `rrif-0.3`.
+- Calibration set of reviewed claims used as regression tests for future prompt/schema changes. Started in `docs/rrif-calibration-examples.md`.
 
 Still useful for future versions:
 
-- Separate `clinicalPopulation` flag for diagnosed versus non-clinical populations.
-- Digital product subframework for app claims, engagement evidence, real-world adherence, privacy, and escalation paths.
-- Larger calibration set across supplements, apps, psychedelics, coaching, workplace wellness, and trauma claims.
+- Separate population-context flags for clinical, consumer, workplace, educational, environmental, technical, or policy settings.
+- Digital product subframework for app and software claims, engagement evidence, real-world adherence, privacy, and escalation paths.
+- Larger calibration set across health, technology, education, climate, economics, supplements, apps, coaching, and workplace claims.
 
 ## Calibration Questions
 
@@ -280,7 +280,7 @@ Use these questions when checking whether the framework is working.
 - Did the conclusion tell a product or content team what to do?
 - Did the artifact avoid full-text storage?
 - Did the evidence actually match the claim's population, intervention, comparator, outcome, and timeframe?
-- Did the review avoid turning plausible mechanisms into clinical certainty?
+- Did the review avoid turning plausible mechanisms into unwarranted certainty?
 - Did the review avoid consumer wellness language?
 - Did the evidence gap, effect magnitude, durability, safety signals, and citation-fidelity signals agree with the final direction label?
 
@@ -294,8 +294,8 @@ Major-version changes should be reserved for breaking schema changes or a substa
 
 When changing the framework, update:
 
-- `docs/mhcif-codex-review-protocol.md`
-- `docs/mhcif-framework-guide.md`
+- `docs/rrif-review-protocol.md`
+- `docs/rrif-framework-guide.md`
 - `docs/app-progress-for-agents.md` if the product workflow, local storage, filters, or canvas behavior changes
 - `server/evidence-topic.schema.json` if fields change
 - `src/types/evidence.ts` if fields change
@@ -304,7 +304,7 @@ When changing the framework, update:
 
 ## Current Weaknesses
 
-MHCIF is intentionally conservative but still immature.
+RRIF is intentionally conservative but still immature.
 
 Known weaknesses:
 
@@ -312,7 +312,7 @@ Known weaknesses:
 - It does not yet have formal inter-rater reliability testing.
 - It does not yet use validated numerical effect-size thresholds or inter-rater-tested durability thresholds.
 - It may miss sources if search terms are too narrow.
-- It can understate emerging areas where direct evidence is sparse but clinically relevant.
+- It can understate emerging areas where direct evidence is sparse but practically relevant.
 - It can overfocus on intervention evidence and underweight implementation quality.
 - It does not yet distinguish regulatory risk by jurisdiction.
 

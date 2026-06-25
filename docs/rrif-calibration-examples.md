@@ -1,6 +1,6 @@
-# MHCIF Calibration Examples
+# RRIF Calibration Examples
 
-Version: `mhcif-0.3-codex`
+Version: `rrif-0.3`
 
 Use these examples to keep direction labels, certainty, and new structured fields consistent across reviews. They are calibration anchors, not universal rules.
 

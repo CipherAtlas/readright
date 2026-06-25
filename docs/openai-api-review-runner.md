@@ -1,10 +1,10 @@
 # ReadRight Review Runners
 
-ReadRight uses the OpenAI API to run the same MHCIF protocol that Codex Desktop uses. Trusted local/internal installations can optionally use Codex CLI instead.
+ReadRight uses the OpenAI API to run the same RRIF protocol that Codex Desktop uses. Trusted local/internal installations can optionally use Codex CLI instead.
 
 Single source of truth:
 
-- Framework: `docs/mhcif-codex-review-protocol.md`
+- Framework: `docs/rrif-review-protocol.md`
 - Artifact contract: `server/evidence-topic.schema.json`
 - Schema module: `server/evidence-schema.mjs`
 - Example/template: `templates/evidence-topic-template.json`
@@ -17,8 +17,8 @@ The server reads `OPENAI_API_KEY` from the environment and calls the Responses A
 
 The runner:
 
-1. Loads `docs/mhcif-codex-review-protocol.md`.
-2. Builds a conservative MHCIF review prompt.
+1. Loads `docs/rrif-review-protocol.md`.
+2. Builds a conservative RRIF review prompt.
 3. Calls OpenAI with `web_search`.
 4. Requires strict JSON matching the evidence topic schema.
 5. Saves the returned artifact to `data/topics`.
@@ -28,8 +28,8 @@ The runner receives `preSearchFilters` from the frontend and applies them before
 
 ```json
 {
-  "topicArea": "Health",
-  "evidenceTypes": ["Human studies"],
+  "topicArea": "General research",
+  "evidenceTypes": ["Research studies"],
   "publicationWindow": "Last 10 years"
 }
 ```
@@ -41,7 +41,7 @@ These filters are not final evidence judgments. They are pre-search constraints 
 - `GET /api/health`
 - `GET /api/topics`
 - `GET /api/topics/:filename`
-- `POST /api/review/claim` with `{ "query": "Breathwork and anxiety", "preSearchFilters": { "topicArea": "Health", "evidenceTypes": ["Human studies", "Systematic reviews"], "publicationWindow": "Last 10 years" } }`
+- `POST /api/review/claim` with `{ "query": "Does this intervention improve the measured outcome?", "preSearchFilters": { "topicArea": "General research", "evidenceTypes": ["Research studies", "Systematic reviews"], "publicationWindow": "Last 10 years" } }`
 - `POST /api/review/article` with `{ "articleUrl": "https://...", "preSearchFilters": { ... } }` or `{ "articleText": "...", "preSearchFilters": { ... } }`
 - `GET /api/canvas/:id`
 - `GET /api/canvas/:id/versions`

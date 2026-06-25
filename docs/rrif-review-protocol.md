@@ -1,8 +1,8 @@
-# Mental Health Claim Integrity Framework
+# ReadRight Integrity Framework
 
-Version: `mhcif-0.3-codex`
+Version: `rrif-0.3`
 
-This protocol tells Codex Desktop, Codex CLI, and the local OpenAI API runner how to generate evidence-map artifacts for ReadRight. It is the shared framework source of truth for every review engine. The goal is not to scrape and archive articles. The goal is to read permitted public or open scientific sources, extract claim-level judgments, and store only metadata, derived analysis, links, and short trace notes.
+This protocol tells ReadRight review runners how to generate evidence-map artifacts. It is the shared RRIF source of truth for every review engine. The goal is not to scrape and archive articles. The goal is to read permitted public or open scientific sources, extract claim-level judgments, and store only metadata, derived analysis, links, and short trace notes.
 
 ## Core Rule
 
@@ -16,12 +16,12 @@ Start broad, then tighten.
 
 Preferred source order:
 
-1. Systematic reviews, meta-analyses, and clinical guidelines.
+1. Systematic reviews, meta-analyses, technical reviews, standards, and domain guidelines.
 2. Randomized controlled trials.
 3. Non-randomized intervention studies.
 4. Observational and mechanism studies.
-5. Public health guidance from reputable institutions.
-6. Consumer health articles and wellness/product pages.
+5. Public guidance, standards, or institutional reports from reputable organizations.
+6. Consumer-facing articles, policy pages, product pages, and explanatory reports.
 7. Critical or skeptical sources that test overstatement.
 
 Use official APIs when clean and available. Otherwise use normal browser/web reading for public pages that can be accessed without bypassing paywalls, logins, CAPTCHAs, or technical restrictions.
@@ -46,8 +46,8 @@ The app may send pre-search filters before source discovery. Treat them as manda
 
 Current filter dimensions:
 
-- topic area, for example `Health`, `Mental health`, `Clinical treatment`, `Wellness`, or `Digital health`
-- evidence type, for example `Human studies`, `Systematic reviews`, `Randomized trials`, `Clinical guidelines`, `Mechanism studies`, or `Public articles`
+- topic area, for example `Health`, `Technology`, `Education`, `Climate`, `Economics`, `Policy`, or `Digital products`
+- evidence type, for example `Human studies`, `Systematic reviews`, `Randomized trials`, `Guidelines`, `Mechanism studies`, `Benchmarks`, `Field studies`, or `Public articles`
 - publication window, for example `Last 10 years`, `Last 5 years`, `Since 2020`, or `Any year`
 
 Use these filters to make the initial web/search pass concise. Prefer sources that satisfy all selected filters. If direct evidence cannot be found inside the filters, state the evidence gap rather than silently broadening the search.
@@ -64,7 +64,7 @@ For each topic, collect sources that can answer:
 - Does the population match?
 - Does the outcome match?
 - Is there a comparator?
-- Is the effect clinically meaningful or only statistically significant?
+- Is the effect practically meaningful or only statistically significant?
 - Does the evidence show durability?
 - Are harms, dropout, deterioration, or contraindications discussed?
 - Are there skeptical or null findings?
@@ -74,14 +74,14 @@ Tighten search when:
 
 - many sources repeat the same public article claims
 - sources are mostly blogs or product pages
-- claims depend on clinical treatment effects
-- claims use phrases like "clinically proven," "cure," "reset," "rewire," or "evidence-based"
+- claims depend on high-stakes treatment, safety, policy, financial, legal, or technical effects
+- claims use phrases like "proven," "guaranteed," "causes," "solves," "cure," "reset," "rewire," or "evidence-based"
 - safety is being implied
 
 Loosen search when:
 
-- no direct clinical trials exist
-- the claim is mechanism-level rather than clinical
+- no direct trials, field studies, benchmarks, audits, or validation studies exist
+- the claim is mechanism-level rather than outcome-level
 - the topic is emerging
 - adjacent terms are needed to find evidence
 - intervention names vary across studies
@@ -101,11 +101,11 @@ Apply these as relevant:
 - STROBE: observational reporting quality.
 - DISCERN: consumer health information quality.
 - JAMA benchmarks: authorship, attribution, disclosure, and currency.
-- NICE ESF: digital health technology evidence expectations.
+- NICE ESF: digital health and technology evidence expectations, when relevant.
 
-These frameworks are inputs. The final judgment comes from MHCIF.
+These frameworks are inputs. The final judgment comes from RRIF.
 
-## MHCIF Criteria
+## RRIF Criteria
 
 For every extracted claim, score these fields:
 
@@ -113,9 +113,9 @@ For every extracted claim, score these fields:
 
 Ask whether the claim is concrete enough to evaluate.
 
-Bad: "Breathwork heals anxiety."
+Bad: "This method works."
 
-Better: "Structured slow breathing may reduce short-term self-reported anxiety symptoms in adults with mild anxiety."
+Better: "This method improved the measured outcome in the studied population over the reported follow-up period."
 
 ### Population Fit
 
@@ -130,13 +130,13 @@ Does the evidence study the same people the claim talks about?
 
 Does the evidence study the same intervention?
 
-Different breathing techniques, meditation protocols, therapy packages, apps, and lifestyle programs should not be treated as interchangeable.
+Different treatments, products, behaviors, exposures, methods, models, apps, and programs should not be treated as interchangeable.
 
 ### Outcome Fit
 
 Does the evidence measure the same outcome?
 
-Stress, anxiety symptoms, diagnosed anxiety disorder, panic attacks, mood, HRV, and neural activity are not the same outcome.
+Proxy measures, self-reported outcomes, objective outcomes, intermediate biomarkers, benchmark scores, and real-world endpoints are not the same outcome.
 
 ### Comparator Fit
 
@@ -144,16 +144,16 @@ What was the intervention compared against?
 
 Rank comparators roughly:
 
-1. active evidence-based treatment
+1. active evidence-based alternative or current standard
 2. credible placebo/sham
-3. treatment as usual
-4. waitlist/no treatment
+3. usual practice or baseline
+4. waitlist/no intervention
 5. before-after only
 6. no comparator
 
 ### Effect Meaning
 
-Check whether the effect is clinically meaningful, not merely statistically significant.
+Check whether the effect is practically meaningful, not merely statistically significant.
 
 Record when effect sizes are unavailable, small, short-term, self-reported, or dependent on weak comparators.
 
@@ -162,7 +162,7 @@ Populate `effectMagnitude` separately from certainty:
 - `none`: credible evidence shows no meaningful effect.
 - `small`: effect appears limited, marginal, or mostly subjective.
 - `moderate`: effect appears meaningful but not transformative.
-- `large`: effect appears large and clinically important; use rarely and only with direct evidence.
+- `large`: effect appears large and important in context; use rarely and only with direct evidence.
 - `unclear`: effect size cannot be responsibly inferred.
 
 ### Durability
@@ -201,9 +201,9 @@ Set `impact` to `high` when the gap changes the direction label or prevents supp
 
 ### Safety and Harms
 
-Check for adverse effects, dropout, worsening, contraindications, and warnings against replacing care.
+Check for adverse effects, dropout, worsening, contraindications, failure modes, misuse, and warnings against replacing established care, standards, or safeguards.
 
-Missing safety discussion should reduce article usefulness, especially for clinical or crisis-adjacent claims.
+Missing safety or harm discussion should reduce article usefulness, especially for high-stakes claims.
 
 Populate `safetySignals` for:
 
@@ -224,7 +224,7 @@ Use:
 
 ### Mechanism Overreach
 
-Mechanism evidence can explain plausibility. It cannot by itself prove clinical efficacy.
+Mechanism evidence can explain plausibility. It cannot by itself prove real-world effectiveness.
 
 Flag claims using language like:
 
@@ -232,7 +232,7 @@ Flag claims using language like:
 - rewire the brain
 - regulate trauma
 - heal anxiety
-- clinically proven
+- proven
 
 ### Commercial Pressure
 
@@ -246,8 +246,8 @@ Ask whether cited papers actually support the exact claim.
 
 Common failure modes:
 
-- mechanism study used as treatment proof
-- healthy-volunteer study generalized to diagnosed disorders
+- mechanism study used as outcome proof
+- narrow sample generalized to a broader population
 - short-term state outcome generalized to durable recovery
 - correlation written as causation
 - review cited but limitations omitted
@@ -292,7 +292,7 @@ Use:
 - `very_low`
 - `insufficient`
 
-Default to conservative certainty. Upgrade only when evidence is direct, replicated, well-reported, clinically relevant, and not dependent on weak comparators.
+Default to conservative certainty. Upgrade only when evidence is direct, replicated, well-reported, relevant to the stated use case, and not dependent on weak comparators.
 
 ## Required Claim Output
 
@@ -324,7 +324,7 @@ Each topic must include:
 
 - query
 - generated timestamp
-- reviewer: `codex`
+- reviewer: `openai_api` or `codex`, depending on the review runner
 - framework version
 - overall verdict
 - responsible wording
@@ -335,7 +335,7 @@ Each topic must include:
 
 A run is not complete until it includes at least:
 
-- one high-level review/guideline source when available
+- one high-level review, guideline, standard, or institutional source when available
 - one direct intervention study when available
 - one public-facing source if public claims are common
 - one skeptical, null, harm, or limitation-oriented source when available
@@ -343,6 +343,6 @@ A run is not complete until it includes at least:
 
 ## Calibration Examples
 
-Use `docs/mhcif-calibration-examples.md` as calibration guidance when deciding between adjacent labels such as `supports_narrower` versus `misleading`, or `mixed` versus `insufficient`.
+Use `docs/rrif-calibration-examples.md` as calibration guidance when deciding between adjacent labels such as `supports_narrower` versus `misleading`, or `mixed` versus `insufficient`.
 
 If any category cannot be found, say so in the artifact rather than silently omitting it.

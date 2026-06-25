@@ -21,13 +21,13 @@ Avoid visual clutter. Advanced actions should stay behind clear menus. Do not re
 
 ## Framework State
 
-The active review framework is `mhcif-0.3-codex`.
+The active review framework is `rrif-0.3`.
 
 Source of truth:
 
-- Human guide: `docs/mhcif-framework-guide.md`
-- Machine runner protocol: `docs/mhcif-codex-review-protocol.md`
-- Calibration examples: `docs/mhcif-calibration-examples.md`
+- Human guide: `docs/rrif-framework-guide.md`
+- Machine runner protocol: `docs/rrif-review-protocol.md`
+- Calibration examples: `docs/rrif-calibration-examples.md`
 - Schema: `server/evidence-topic.schema.json`
 - Frontend types: `src/types/evidence.ts`
 
@@ -55,13 +55,13 @@ Structured claim output includes `direction`, `evidenceCertainty`, `overstatemen
 The server supports two review engines:
 
 - `openai_api`: calls the OpenAI Responses API with web search and strict JSON output.
-- `codex_cli`: shells out to local `codex exec` using the same MHCIF protocol and schema.
+- `codex_cli`: shells out to local `codex exec` using the same RRIF protocol and schema.
 - `auto`: uses OpenAI API when `OPENAI_API_KEY` is present, otherwise Codex CLI.
 
 The review prompt must honor pre-search filters before source discovery:
 
-- topic area, default `Health`
-- evidence types, default `Human studies`; the frontend supports multi-select checkboxes and sends `evidenceTypes`
+- topic area, default `General research`
+- evidence types, default `Research studies`; the frontend supports multi-select checkboxes and sends `evidenceTypes`
 - publication window, default `Last 10 years`
 
 The frontend sends these as `preSearchFilters`. The server also accepts the older `evidenceType` string and `scopes` array and maps them into the same filter object for compatibility.

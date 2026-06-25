@@ -34,7 +34,7 @@
     "frameworkVersion": {
       "type": "string",
       "enum": [
-        "mhcif-0.3-codex"
+        "rrif-0.3"
       ]
     },
     "verdict": {
@@ -465,6 +465,12 @@
               "rct",
               "observational_study",
               "guideline",
+              "standard",
+              "technical_report",
+              "policy_report",
+              "benchmark",
+              "field_study",
+              "dataset",
               "public_article",
               "product_page",
               "other"

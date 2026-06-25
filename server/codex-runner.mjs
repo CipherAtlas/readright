@@ -2,13 +2,13 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { spawn } from "node:child_process";
-import { normalizeArtifact, reviewPrompt } from "./mhcif-runner.mjs";
+import { normalizeArtifact, reviewPrompt } from "./rrif-runner.mjs";
 import { existingCodexCandidates } from "./codex-path.mjs";
 
 const ROOT = process.cwd();
 const SCHEMA_PATH = path.join(ROOT, "server", "evidence-topic.schema.json");
-const FRAMEWORK_PATH = path.join(ROOT, "docs", "mhcif-codex-review-protocol.md");
-const CALIBRATION_PATH = path.join(ROOT, "docs", "mhcif-calibration-examples.md");
+const FRAMEWORK_PATH = path.join(ROOT, "docs", "rrif-review-protocol.md");
+const CALIBRATION_PATH = path.join(ROOT, "docs", "rrif-calibration-examples.md");
 
 function codexExecutable() {
   return process.env.CODEX_BIN || "codex";
@@ -125,7 +125,7 @@ function runCodexProcess({ prompt, outputPath, timeoutMs }) {
   });
 }
 
-export async function runCodexMhcifReview({
+export async function runCodexRrifReview({
   mode,
   query,
   articleUrl = "",
@@ -146,7 +146,7 @@ export async function runCodexMhcifReview({
 
   const outputPath = path.join(
     os.tmpdir(),
-    `mhcif-codex-${Date.now()}-${Math.random().toString(16).slice(2)}.json`
+    `rrif-codex-${Date.now()}-${Math.random().toString(16).slice(2)}.json`
   );
   const prompt = buildCodexPrompt({
     mode,

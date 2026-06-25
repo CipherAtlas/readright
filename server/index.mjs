@@ -4,8 +4,8 @@ import { createReadStream } from "node:fs";
 import http from "node:http";
 import path from "node:path";
 import { spawn } from "node:child_process";
-import { artifactFilename, runMhcifReview } from "./mhcif-runner.mjs";
-import { runCodexMhcifReview } from "./codex-runner.mjs";
+import { artifactFilename, runRrifReview } from "./rrif-runner.mjs";
+import { runCodexRrifReview } from "./codex-runner.mjs";
 import { existingCodexCandidates } from "./codex-path.mjs";
 
 const ROOT = process.cwd();
@@ -18,7 +18,7 @@ const CANVAS_DIR = process.env.CANVAS_DATA_DIR
   : path.join(ROOT, "data", "canvases");
 const DIST_DIR = path.join(ROOT, "dist");
 const ENV_PATH = path.join(ROOT, ".env");
-const FRAMEWORK_VERSION = "mhcif-0.3-codex";
+const FRAMEWORK_VERSION = "rrif-0.3";
 
 function reviewEngine() {
   return process.env.REVIEW_ENGINE || "auto";
@@ -50,9 +50,9 @@ function readPreSearchFilters(body) {
   if (body.preSearchFilters && typeof body.preSearchFilters === "object") {
     const evidenceTypes = Array.isArray(body.preSearchFilters.evidenceTypes)
       ? body.preSearchFilters.evidenceTypes.map(String).filter(Boolean)
-      : [String(body.preSearchFilters.evidenceType || "Human studies")];
+      : [String(body.preSearchFilters.evidenceType || "Research studies")];
     return {
-      topicArea: String(body.preSearchFilters.topicArea || "Health"),
+      topicArea: String(body.preSearchFilters.topicArea || "General research"),
       evidenceType: evidenceTypes.join(", "),
       evidenceTypes,
       publicationWindow: String(body.preSearchFilters.publicationWindow || "Last 10 years"),
@@ -60,9 +60,9 @@ function readPreSearchFilters(body) {
   }
 
   const scopes = Array.isArray(body.scopes) ? body.scopes.map(String) : [];
-  const evidenceTypes = [scopes[1] || "Human studies"];
+  const evidenceTypes = [scopes[1] || "Research studies"];
   return {
-    topicArea: scopes[0] || "Health",
+    topicArea: scopes[0] || "General research",
     evidenceType: evidenceTypes.join(", "),
     evidenceTypes,
     publicationWindow: scopes[2] || "Last 10 years",
@@ -430,11 +430,11 @@ async function saveCanvas(body) {
 async function runReview(payload) {
   const engine = reviewEngine();
   if (engine === "openai_api") {
-    return runMhcifReview(payload);
+    return runRrifReview(payload);
   }
 
   if (engine === "codex_cli") {
-    return runCodexMhcifReview(payload);
+    return runCodexRrifReview(payload);
   }
 
   if (engine !== "auto") {
@@ -446,10 +446,10 @@ async function runReview(payload) {
   }
 
   if (process.env.OPENAI_API_KEY) {
-    return runMhcifReview(payload);
+    return runRrifReview(payload);
   }
 
-  return runCodexMhcifReview(payload);
+  return runCodexRrifReview(payload);
 }
 
 async function handleApi(req, res, url) {

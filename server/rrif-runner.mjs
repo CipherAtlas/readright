@@ -4,9 +4,9 @@ import OpenAI from "openai";
 import { evidenceTopicJsonSchema } from "./evidence-schema.mjs";
 
 const ROOT = process.cwd();
-const FRAMEWORK_PATH = path.join(ROOT, "docs", "mhcif-codex-review-protocol.md");
-const CALIBRATION_PATH = path.join(ROOT, "docs", "mhcif-calibration-examples.md");
-const FRAMEWORK_VERSION = "mhcif-0.3-codex";
+const FRAMEWORK_PATH = path.join(ROOT, "docs", "rrif-review-protocol.md");
+const CALIBRATION_PATH = path.join(ROOT, "docs", "rrif-calibration-examples.md");
+const FRAMEWORK_VERSION = "rrif-0.3";
 
 function slugify(value) {
   return value
@@ -96,7 +96,7 @@ export function normalizeArtifact(
       studyType: source.studyType || "",
       frameworkFlags: Array.isArray(source.frameworkFlags)
         ? source.frameworkFlags
-        : ["MHCIF"],
+        : ["RRIF"],
       shortSnippet: source.shortSnippet || "",
       year: Number.isInteger(source.year) ? source.year : 0,
     })),
@@ -106,9 +106,9 @@ export function normalizeArtifact(
 function formatPreSearchFilters(preSearchFilters = {}) {
   const evidenceTypeText = Array.isArray(preSearchFilters.evidenceTypes) && preSearchFilters.evidenceTypes.length
     ? preSearchFilters.evidenceTypes.join(", ")
-    : preSearchFilters.evidenceType || "Human studies";
+    : preSearchFilters.evidenceType || "Research studies";
   const filters = {
-    topicArea: preSearchFilters.topicArea || "Health",
+    topicArea: preSearchFilters.topicArea || "General research",
     evidenceType: evidenceTypeText,
     publicationWindow: preSearchFilters.publicationWindow || "Last 10 years",
   };
@@ -125,7 +125,7 @@ Apply these filters before web/source discovery. Keep searches concise by combin
 export function reviewPrompt({ mode, query, articleUrl, articleText, framework, preSearchFilters = {} }) {
   const preSearchFilterText = formatPreSearchFilters(preSearchFilters);
   const common = `
-You are generating a local evidence-map artifact for a mental-health claim integrity tool.
+You are generating a local evidence-map artifact for a research claim integrity tool.
 
 Use this exact framework as the judging protocol:
 
@@ -137,7 +137,7 @@ Hard constraints:
 - Do not bypass paywalls, login walls, CAPTCHAs, or explicit technical restrictions.
 - Do not store full article bodies.
 - Store only metadata, links, short trace notes, normalized claims, and derived judgments.
-- Prefer systematic reviews, meta-analyses, guidelines, and direct trials where available.
+- Prefer systematic reviews, meta-analyses, guidelines, standards, technical reports, direct trials, field studies, benchmarks, or validation studies where available.
 - Include sources for support, narrower support, mixed/null/against evidence, limitations, safety, and overstatement risk where available.
 - If a required evidence category cannot be found, state the gap in the artifact reasoning.
 - Use "supports" only when the claim is direct, robust, and proportionate. Otherwise prefer "supports_narrower", "mixed", "insufficient", "misleading", or "marketing_overreach".
@@ -156,18 +156,18 @@ Article URL: ${articleUrl || "not supplied"}
 Article text or excerpt:
 ${articleText || "not supplied"}
 
-Output an EvidenceTopic artifact where claims are the mental-health claims extracted from the article. If a URL is supplied, use web search to read permitted public information about that URL and its cited evidence. If article text is supplied, analyze that text directly and use web search only to check citation fidelity and surrounding evidence when needed.`;
+Output an EvidenceTopic artifact where claims are the research claims extracted from the article. If a URL is supplied, use web search to read permitted public information about that URL and its cited evidence. If article text is supplied, analyze that text directly and use web search only to check citation fidelity and surrounding evidence when needed.`;
   }
 
   return `${common}
 
-Task: search and review this mental-health claim or topic:
+Task: search and review this research claim or topic:
 ${query}
 
 Output an EvidenceTopic artifact that maps relevant claims into supports, supports_narrower, mixed, against, insufficient, misleading, and marketing_overreach where applicable.`;
 }
 
-export async function runMhcifReview({
+export async function runRrifReview({
   mode,
   query,
   articleUrl = "",
