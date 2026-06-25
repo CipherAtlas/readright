@@ -9,7 +9,6 @@ Single source of truth:
 - Schema module: `server/evidence-schema.mjs`
 - Example/template: `templates/evidence-topic-template.json`
 - Frontend type shape: `src/types/evidence.ts`
-- Product handoff/status: `docs/app-progress-for-agents.md`
 
 ## OpenAI API Runtime
 

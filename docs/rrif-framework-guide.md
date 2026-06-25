@@ -6,8 +6,6 @@ This document explains the ReadRight Integrity Framework in human terms: what it
 
 The machine-facing protocol lives in `docs/rrif-review-protocol.md`. Treat that file as the active review instruction used by ReadRight review runners. Treat this guide as the design rationale and improvement manual.
 
-For the current ReadRight implementation state, UI decisions, local JSON storage, canvas behavior, and agent handoff notes, read `docs/app-progress-for-agents.md`.
-
 ## Purpose
 
 RRIF exists to answer one question:
@@ -296,7 +294,6 @@ When changing the framework, update:
 
 - `docs/rrif-review-protocol.md`
 - `docs/rrif-framework-guide.md`
-- `docs/app-progress-for-agents.md` if the product workflow, local storage, filters, or canvas behavior changes
 - `server/evidence-topic.schema.json` if fields change
 - `src/types/evidence.ts` if fields change
 - `templates/evidence-topic-template.json` if fields change

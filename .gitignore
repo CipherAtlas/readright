@@ -15,3 +15,5 @@ agents.md
 audit/
 data/topics/*.json
 !data/topics/.gitkeep
+data/canvases/*.json
+!data/canvases/demo-workspace.json
