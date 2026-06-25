@@ -5,7 +5,23 @@
   "view": "overview",
   "selectedBranchId": "support-sleep-latency",
   "selectedReasonId": "faster-onset",
-  "nodes": [],
-  "arrows": [],
-  "updatedAt": "2026-06-24T19:28:19.772Z"
+  "nodes": [
+    {
+      "id": "manual-support-1782379780110",
+      "kind": "support",
+      "title": "Supporting proof",
+      "body": "Summarize evidence that supports the initial claim.",
+      "color": "green",
+      "x": -137.16437813663111,
+      "y": 324.10370679192556
+    }
+  ],
+  "arrows": [
+    {
+      "id": "manual-arrow-1782379786211",
+      "source": "manual-support-1782379780110",
+      "target": "support-sleep-latency"
+    }
+  ],
+  "updatedAt": "2026-06-25T09:29:48.284Z"
 }

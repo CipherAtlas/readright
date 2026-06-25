@@ -52,6 +52,7 @@ import {
   Highlighter,
   History,
   Home,
+  Keyboard,
   Layers,
   Loader2,
   Lock,
@@ -80,6 +81,7 @@ import {
   Trash2,
   Type,
   Undo2,
+  X,
   ZoomIn,
   ZoomOut,
 } from "lucide-react";
@@ -242,6 +244,218 @@ type CanvasVersionRecord = {
   summary?: string;
   canvas: CanvasDocument;
 };
+
+const shortcutDefinitions = [
+  {
+    id: "saveCanvas",
+    label: "Save canvas",
+    category: "General",
+    defaultShortcut: "Ctrl+S",
+  },
+  {
+    id: "undoCanvas",
+    label: "Undo canvas change",
+    category: "General",
+    defaultShortcut: "Ctrl+Z",
+  },
+  {
+    id: "redoCanvas",
+    label: "Redo canvas change",
+    category: "General",
+    defaultShortcut: "Ctrl+Shift+Z",
+  },
+  {
+    id: "runReview",
+    label: "Build map",
+    category: "General",
+    defaultShortcut: "Ctrl+Enter",
+  },
+  {
+    id: "focusClaim",
+    label: "Focus claim input",
+    category: "General",
+    defaultShortcut: "Ctrl+K",
+  },
+  {
+    id: "openSettings",
+    label: "Open settings",
+    category: "General",
+    defaultShortcut: "Ctrl+,",
+  },
+  {
+    id: "openKeybindings",
+    label: "Open keybinds",
+    category: "General",
+    defaultShortcut: "Ctrl+/",
+  },
+  {
+    id: "viewOverview",
+    label: "Overview view",
+    category: "Views",
+    defaultShortcut: "Alt+1",
+  },
+  {
+    id: "viewBranch",
+    label: "Branch view",
+    category: "Views",
+    defaultShortcut: "Alt+2",
+  },
+  {
+    id: "viewEvidence",
+    label: "Evidence view",
+    category: "Views",
+    defaultShortcut: "Alt+3",
+  },
+  {
+    id: "canvasSelect",
+    label: "Select / move tool",
+    category: "Canvas tools",
+    defaultShortcut: "V",
+  },
+  {
+    id: "canvasConnect",
+    label: "Connect tool",
+    category: "Canvas tools",
+    defaultShortcut: "A",
+  },
+  {
+    id: "canvasCancel",
+    label: "Cancel canvas action",
+    category: "Canvas tools",
+    defaultShortcut: "Escape",
+  },
+  {
+    id: "canvasZoomIn",
+    label: "Zoom in",
+    category: "Canvas navigation",
+    defaultShortcut: "Ctrl+=",
+  },
+  {
+    id: "canvasZoomOut",
+    label: "Zoom out",
+    category: "Canvas navigation",
+    defaultShortcut: "Ctrl+-",
+  },
+  {
+    id: "canvasFit",
+    label: "Fit canvas to view",
+    category: "Canvas navigation",
+    defaultShortcut: "Ctrl+0",
+  },
+  {
+    id: "canvasCopy",
+    label: "Copy selected element",
+    category: "Canvas editing",
+    defaultShortcut: "Ctrl+C",
+  },
+  {
+    id: "canvasDuplicate",
+    label: "Duplicate selected element",
+    category: "Canvas editing",
+    defaultShortcut: "Ctrl+D",
+  },
+  {
+    id: "canvasDelete",
+    label: "Delete selected element",
+    category: "Canvas editing",
+    defaultShortcut: "Delete",
+  },
+  {
+    id: "addBox",
+    label: "Add box",
+    category: "Add diagram nodes",
+    defaultShortcut: "B",
+  },
+  {
+    id: "addText",
+    label: "Add text",
+    category: "Add diagram nodes",
+    defaultShortcut: "T",
+  },
+  {
+    id: "addNote",
+    label: "Add sticky note",
+    category: "Add diagram nodes",
+    defaultShortcut: "N",
+  },
+  {
+    id: "addDecision",
+    label: "Add decision",
+    category: "Add diagram nodes",
+    defaultShortcut: "D",
+  },
+  {
+    id: "addConnector",
+    label: "Add circle",
+    category: "Add diagram nodes",
+    defaultShortcut: "C",
+  },
+  {
+    id: "addSupport",
+    label: "Add support proof",
+    category: "Add research nodes",
+    defaultShortcut: "Alt+S",
+  },
+  {
+    id: "addOppose",
+    label: "Add counter-proof",
+    category: "Add research nodes",
+    defaultShortcut: "Alt+O",
+  },
+  {
+    id: "addSource",
+    label: "Add source",
+    category: "Add research nodes",
+    defaultShortcut: "Alt+U",
+  },
+  {
+    id: "addQuestion",
+    label: "Add question",
+    category: "Add research nodes",
+    defaultShortcut: "Alt+Q",
+  },
+  {
+    id: "addComment",
+    label: "Add comment",
+    category: "Add research nodes",
+    defaultShortcut: "Alt+M",
+  },
+  {
+    id: "addHighlight",
+    label: "Add highlight",
+    category: "Add research nodes",
+    defaultShortcut: "Alt+H",
+  },
+] as const;
+
+type ShortcutId = (typeof shortcutDefinitions)[number]["id"];
+type ShortcutMap = Record<ShortcutId, string>;
+
+const shortcutStorageKey = "readright.keybindings.v1";
+const shortcutCategoryOrder = [
+  "General",
+  "Views",
+  "Canvas tools",
+  "Canvas navigation",
+  "Canvas editing",
+  "Add diagram nodes",
+  "Add research nodes",
+] as const;
+const appShortcutIds: ShortcutId[] = [
+  "saveCanvas",
+  "undoCanvas",
+  "redoCanvas",
+  "runReview",
+  "focusClaim",
+  "openSettings",
+  "openKeybindings",
+  "viewOverview",
+  "viewBranch",
+  "viewEvidence",
+];
+const canvasShortcutIds: ShortcutId[] = shortcutDefinitions
+  .map((definition) => definition.id)
+  .filter((id) => !appShortcutIds.includes(id));
 
 type ArgumentNodeData = {
   title: string;
@@ -703,6 +917,144 @@ function classNames(...classes: Array<string | false | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
+function defaultShortcutMap(): ShortcutMap {
+  return shortcutDefinitions.reduce((bindings, definition) => {
+    bindings[definition.id] = definition.defaultShortcut;
+    return bindings;
+  }, {} as ShortcutMap);
+}
+
+function normalizeShortcutKey(key: string) {
+  if (key === " ") return "Space";
+  if (key === "Esc") return "Escape";
+  if (key === "Del") return "Delete";
+  if (key.length === 1) return key.toUpperCase();
+  return key;
+}
+
+function normalizeShortcutText(value: string) {
+  const parts = value
+    .split("+")
+    .map((part) => part.trim())
+    .filter(Boolean);
+  if (!parts.length) return "";
+
+  const modifiers = {
+    ctrl: false,
+    alt: false,
+    shift: false,
+    meta: false,
+  };
+  let key = "";
+
+  parts.forEach((part) => {
+    const normalized = part.toLowerCase();
+    if (normalized === "ctrl" || normalized === "control") modifiers.ctrl = true;
+    else if (normalized === "alt" || normalized === "option") modifiers.alt = true;
+    else if (normalized === "shift") modifiers.shift = true;
+    else if (normalized === "meta" || normalized === "cmd" || normalized === "command") modifiers.meta = true;
+    else key = normalizeShortcutKey(part);
+  });
+
+  if (!key) return "";
+  return [
+    modifiers.ctrl ? "Ctrl" : "",
+    modifiers.meta ? "Meta" : "",
+    modifiers.alt ? "Alt" : "",
+    modifiers.shift ? "Shift" : "",
+    key,
+  ]
+    .filter(Boolean)
+    .join("+");
+}
+
+function shortcutFromKeyboardEvent(event: KeyboardEvent | React.KeyboardEvent) {
+  const key = normalizeShortcutKey(event.key);
+  if (["Control", "Meta", "Alt", "Shift", "Tab"].includes(key)) return "";
+  return [
+    event.ctrlKey ? "Ctrl" : "",
+    event.metaKey ? "Meta" : "",
+    event.altKey ? "Alt" : "",
+    event.shiftKey ? "Shift" : "",
+    key,
+  ]
+    .filter(Boolean)
+    .join("+");
+}
+
+function shortcutParts(value: string) {
+  const normalized = normalizeShortcutText(value);
+  const parts = normalized.split("+").filter(Boolean);
+  return {
+    ctrl: parts.includes("Ctrl"),
+    meta: parts.includes("Meta"),
+    alt: parts.includes("Alt"),
+    shift: parts.includes("Shift"),
+    key: parts.find((part) => !["Ctrl", "Meta", "Alt", "Shift"].includes(part)) || "",
+  };
+}
+
+function shortcutsEquivalent(first: string, second: string) {
+  return normalizeShortcutText(first) === normalizeShortcutText(second);
+}
+
+function matchesShortcut(event: KeyboardEvent, shortcut: string) {
+  const binding = shortcutParts(shortcut);
+  if (!binding.key) return false;
+  if (normalizeShortcutKey(event.key) !== binding.key) return false;
+  const ctrlOrMetaMatches =
+    binding.ctrl && !binding.meta
+      ? event.ctrlKey || event.metaKey
+      : event.ctrlKey === binding.ctrl && event.metaKey === binding.meta;
+  return ctrlOrMetaMatches && event.altKey === binding.alt && event.shiftKey === binding.shift;
+}
+
+function getShortcutAction(event: KeyboardEvent, bindings: ShortcutMap, allowedIds: ShortcutId[]) {
+  return allowedIds.find((id) => matchesShortcut(event, bindings[id]));
+}
+
+function isEditableEventTarget(target: EventTarget | null) {
+  if (!(target instanceof HTMLElement)) return false;
+  return Boolean(target.closest("input, textarea, select, [contenteditable='true']"));
+}
+
+function loadShortcutMap() {
+  const defaults = defaultShortcutMap();
+  try {
+    const raw = window.localStorage.getItem(shortcutStorageKey);
+    if (!raw) return defaults;
+    const saved = JSON.parse(raw) as Partial<Record<ShortcutId, string>>;
+    return shortcutDefinitions.reduce((bindings, definition) => {
+      bindings[definition.id] =
+        typeof saved[definition.id] === "string"
+          ? normalizeShortcutText(saved[definition.id] || "")
+          : definition.defaultShortcut;
+      return bindings;
+    }, {} as ShortcutMap);
+  } catch {
+    return defaults;
+  }
+}
+
+function assignShortcutBinding(bindings: ShortcutMap, actionId: ShortcutId, shortcut: string) {
+  const normalized = normalizeShortcutText(shortcut);
+  const next = { ...bindings, [actionId]: normalized };
+  if (normalized) {
+    shortcutDefinitions.forEach((definition) => {
+      if (definition.id !== actionId && shortcutsEquivalent(next[definition.id], normalized)) {
+        next[definition.id] = "";
+      }
+    });
+  }
+  return next;
+}
+
+function formatShortcut(value: string) {
+  const normalized = normalizeShortcutText(value);
+  if (!normalized) return "Unassigned";
+  return normalized.replace(/\bMeta\b/g, "Cmd").replace(/\+/g, " + ");
+}
+
 function isSupport(direction: EvidenceDirection) {
   return direction === "supports" || direction === "supports_narrower";
 }
@@ -743,14 +1095,6 @@ function escapeXml(value: unknown) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&apos;");
-}
-
-function escapeHtml(value: unknown) {
-  return String(value ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
 }
 
 function downloadBlob(blob: Blob, filename: string) {
@@ -1001,9 +1345,250 @@ function buildXlsx(workspace: Workspace, topic: EvidenceTopic) {
   ]);
 }
 
-function buildPrintReportHtml(workspace: Workspace, topic: EvidenceTopic) {
-  const rows = exportRows(workspace, topic);
-  return `<!doctype html><html><head><meta charset="utf-8"/><title>${escapeHtml(workspace.claim)} - ReadRight</title><style>body{font-family:Inter,Arial,sans-serif;margin:40px;color:#161613;line-height:1.5}.brand{display:flex;align-items:center;gap:12px;margin:0 0 18px}.brand img{width:42px;height:42px;object-fit:contain;border-radius:10px;background:#10100e;padding:5px}.brand span{font-size:15px;font-weight:700;color:#4c7d72}h1{font-size:28px;margin:0 0 8px}h2{font-size:18px;margin:28px 0 8px}p{margin:6px 0}table{width:100%;border-collapse:collapse;margin-top:18px;font-size:12px}th,td{border:1px solid #ddd8cf;padding:8px;vertical-align:top;text-align:left}th{background:#f3f0e8}@media print{body{margin:24px}}</style></head><body><div class="brand"><img src="/readright-logo.png" alt=""/><span>ReadRight</span></div><h1>Evidence Review</h1><p><strong>Claim:</strong> ${escapeHtml(workspace.claim)}</p><p><strong>Verdict:</strong> ${escapeHtml(confidenceLabels[workspace.confidence])}</p><p>${escapeHtml(topic.verdict.summary)}</p><h2>Responsible wording</h2><p>${escapeHtml(workspace.normalizedClaim)}</p><h2>Arguments, reasons, and sources</h2><table><thead><tr><th>Section</th><th>Type</th><th>Title</th><th>Detail</th><th>Evidence</th><th>Confidence</th><th>Sources</th></tr></thead><tbody>${rows.map((row) => `<tr><td>${escapeHtml(row.section)}</td><td>${escapeHtml(row.type)}</td><td>${escapeHtml(row.title)}</td><td>${escapeHtml(row.detail)}</td><td>${escapeHtml(row.evidence)}</td><td>${escapeHtml(row.confidence)}</td><td>${escapeHtml(row.sources)}</td></tr>`).join("")}</tbody></table><script>window.addEventListener("load",()=>setTimeout(()=>window.print(),250));</script></body></html>`;
+type PdfLine = {
+  bold?: boolean;
+  fontSize: number;
+  text: string;
+  x: number;
+  y: number;
+};
+
+function normalizePdfText(value: unknown) {
+  return String(value ?? "")
+    .replace(/[\u2018\u2019]/g, "'")
+    .replace(/[\u201c\u201d]/g, '"')
+    .replace(/[\u2013\u2014]/g, "-")
+    .replace(/\u2026/g, "...")
+    .replace(/\u2022/g, "-")
+    .replace(/[^\x09\x0a\x0d\x20-\x7e]/g, "?");
+}
+
+function escapePdfText(value: string) {
+  return normalizePdfText(value).replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
+}
+
+function wrapPdfText(text: unknown, maxCharacters: number) {
+  const normalized = normalizePdfText(text).replace(/\s+/g, " ").trim();
+  if (!normalized) return [""];
+
+  const lines: string[] = [];
+  let current = "";
+
+  normalized.split(" ").forEach((word) => {
+    if (word.length > maxCharacters) {
+      if (current) {
+        lines.push(current);
+        current = "";
+      }
+      for (let index = 0; index < word.length; index += maxCharacters) {
+        lines.push(word.slice(index, index + maxCharacters));
+      }
+      return;
+    }
+
+    const next = current ? `${current} ${word}` : word;
+    if (next.length > maxCharacters && current) {
+      lines.push(current);
+      current = word;
+    } else {
+      current = next;
+    }
+  });
+
+  if (current) lines.push(current);
+  return lines;
+}
+
+function buildPdf(workspace: Workspace, topic: EvidenceTopic) {
+  const encoder = new TextEncoder();
+  const pageWidth = 595.28;
+  const pageHeight = 841.89;
+  const margin = 48;
+  const bottomMargin = 52;
+  const maxTextWidth = pageWidth - margin * 2;
+  const pages: PdfLine[][] = [[]];
+  let y = pageHeight - margin;
+
+  function startPage() {
+    if (pages[pages.length - 1].length) {
+      pages.push([]);
+    }
+    y = pageHeight - margin;
+  }
+
+  function addText(
+    text: unknown,
+    {
+      bold = false,
+      fontSize = 11,
+      gapBefore = 0,
+      indent = 0,
+      leading = fontSize * 1.35,
+    }: {
+      bold?: boolean;
+      fontSize?: number;
+      gapBefore?: number;
+      indent?: number;
+      leading?: number;
+    } = {}
+  ) {
+    y -= gapBefore;
+    const averageCharacterWidth = fontSize * (bold ? 0.56 : 0.52);
+    const maxCharacters = Math.max(18, Math.floor((maxTextWidth - indent) / averageCharacterWidth));
+    wrapPdfText(text, maxCharacters).forEach((line) => {
+      if (y < bottomMargin + leading) startPage();
+      pages[pages.length - 1].push({
+        bold,
+        fontSize,
+        text: line,
+        x: margin + indent,
+        y,
+      });
+      y -= leading;
+    });
+  }
+
+  function addSectionTitle(text: string) {
+    addText(text, { bold: true, fontSize: 15, gapBefore: 18, leading: 20 });
+  }
+
+  function addBranchList(title: string, branches: Branch[]) {
+    addSectionTitle(`${title} (${branches.length})`);
+    if (!branches.length) {
+      addText("No branches in this group.", { fontSize: 10, indent: 12, leading: 14 });
+      return;
+    }
+
+    branches.forEach((branch, index) => {
+      addText(`${index + 1}. ${branch.title}`, { bold: true, fontSize: 10, gapBefore: index ? 6 : 2, leading: 14 });
+      addText(`${branch.status} | ${branch.confidence} confidence | ${branch.reasonsLabel} | ${branch.studiesLabel}`, {
+        fontSize: 9,
+        indent: 12,
+        leading: 12,
+      });
+      addText(branch.rationale, { fontSize: 9, indent: 12, leading: 12 });
+    });
+  }
+
+  function addSourceSummary(source: WorkspaceSource, index: number) {
+    addText(`${index + 1}. ${source.title}`, { bold: true, fontSize: 9, gapBefore: index ? 6 : 2, leading: 12 });
+    addText(`${source.type} | ${source.direction} | ${confidenceLabels[source.quality]}${source.year ? ` | ${source.year}` : ""}`, {
+      fontSize: 9,
+      indent: 12,
+      leading: 12,
+    });
+    addText(source.takeaway, { fontSize: 9, indent: 12, leading: 12 });
+    if (source.url) addText(source.url, { fontSize: 8, indent: 12, leading: 11 });
+  }
+
+  const branchesBySection: Array<{ label: string; branches: Branch[] }> = [
+    { label: "For", branches: workspace.supports },
+    { label: "Against", branches: workspace.opposes },
+    { label: "Neutral / Mixed", branches: workspace.neutral },
+  ];
+  const allBranches = branchesBySection.flatMap(({ label, branches }) =>
+    branches.map((branch) => ({ branch, section: label }))
+  );
+
+  addText("ReadRight Evidence Review", { bold: true, fontSize: 22, leading: 28 });
+  addText("Main overview", { bold: true, fontSize: 16, gapBefore: 8, leading: 20 });
+  addText(`Claim: ${workspace.claim}`, { bold: true, fontSize: 13, gapBefore: 10, leading: 18 });
+  addText(`Verdict: ${confidenceLabels[workspace.confidence]}`, { fontSize: 12, gapBefore: 4, leading: 16 });
+  addText(topic.verdict.summary, { fontSize: 11, gapBefore: 8, leading: 15 });
+  addText(
+    `Branches: ${workspace.supports.length} for, ${workspace.opposes.length} against, ${workspace.neutral.length} neutral/mixed. Sources: ${workspace.sources.length}.`,
+    { fontSize: 10, gapBefore: 8, leading: 14 }
+  );
+  addSectionTitle("Responsible wording");
+  addText(workspace.normalizedClaim, { fontSize: 11, leading: 15 });
+  branchesBySection.forEach(({ label, branches }) => addBranchList(label, branches));
+
+  allBranches.forEach(({ branch, section }, index) => {
+    startPage();
+    addText(`Branch ${index + 1}: ${branch.title}`, { bold: true, fontSize: 20, leading: 26 });
+    addText(`${section} | ${branch.status} | ${branch.confidence} confidence`, {
+      bold: true,
+      fontSize: 11,
+      gapBefore: 4,
+      leading: 15,
+    });
+    addText(`${branch.reasonsLabel} | ${branch.studiesLabel} | ${branch.assumptionsLabel}`, {
+      fontSize: 10,
+      gapBefore: 2,
+      leading: 14,
+    });
+    addSectionTitle("Rationale");
+    addText(branch.rationale, { fontSize: 10, leading: 14 });
+    if (branch.counterpoint) {
+      addSectionTitle("Counterpoint / reviewer note");
+      addText(branch.counterpoint, { fontSize: 10, leading: 14 });
+    }
+
+    addSectionTitle("Reasons");
+    getBranchReasonNodes(branch).forEach((reason, reasonIndex) => {
+      addText(`${reasonIndex + 1}. ${reason.title}`, {
+        bold: true,
+        fontSize: 10,
+        gapBefore: reasonIndex ? 8 : 2,
+        leading: 14,
+      });
+      addText(`${reason.badge} | ${reason.tone}`, { fontSize: 9, indent: 12, leading: 12 });
+      addText(reason.detail, { fontSize: 9, indent: 12, leading: 12 });
+      if (reason.sourceIds.length) {
+        addText(`Sources: ${reason.sourceIds.join(", ")}`, { fontSize: 8, indent: 12, leading: 11 });
+      }
+    });
+
+    addSectionTitle("Attached sources");
+    getSourceRecords(workspace, branch.sourceIds).forEach(addSourceSummary);
+  });
+
+  const pageObjects = pages.map((page) =>
+    page
+      .map(
+        (line) =>
+          `BT /${line.bold ? "F2" : "F1"} ${line.fontSize} Tf 1 0 0 1 ${line.x.toFixed(2)} ${line.y.toFixed(
+            2
+          )} Tm (${escapePdfText(line.text)}) Tj ET`
+      )
+      .join("\n")
+  );
+  const catalogId = 1;
+  const pagesId = 2;
+  const regularFontId = 3;
+  const boldFontId = 4;
+  const firstPageId = 5;
+  const pageReferences = pageObjects.map((_, index) => `${firstPageId + index * 2} 0 R`).join(" ");
+  const objects = [
+    `<< /Type /Catalog /Pages ${pagesId} 0 R >>`,
+    `<< /Type /Pages /Kids [${pageReferences}] /Count ${pageObjects.length} >>`,
+    `<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>`,
+    `<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>`,
+  ];
+
+  pageObjects.forEach((content, index) => {
+    const pageId = firstPageId + index * 2;
+    const contentId = pageId + 1;
+    objects.push(
+      `<< /Type /Page /Parent ${pagesId} 0 R /MediaBox [0 0 ${pageWidth} ${pageHeight}] /Resources << /Font << /F1 ${regularFontId} 0 R /F2 ${boldFontId} 0 R >> >> /Contents ${contentId} 0 R >>`,
+      `<< /Length ${content.length} >>\nstream\n${content}\nendstream`
+    );
+  });
+
+  let pdf = "%PDF-1.4\n";
+  const offsets = objects.map((object, index) => {
+    const offset = pdf.length;
+    pdf += `${index + 1} 0 obj\n${object}\nendobj\n`;
+    return offset;
+  });
+  const xrefOffset = pdf.length;
+  pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
+  offsets.forEach((offset) => {
+    pdf += `${String(offset).padStart(10, "0")} 00000 n \n`;
+  });
+  pdf += `trailer\n<< /Size ${objects.length + 1} /Root ${catalogId} 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`;
+
+  return encoder.encode(pdf);
 }
 
 function makeReasonNodes(claim: ClaimAssessment): ReasonNode[] {
@@ -1821,6 +2406,8 @@ function GraphCanvas({
   setSelectedReasonId,
   drawerOpen,
   setDrawerOpen,
+  keybindings,
+  shortcutsDisabled,
 }: {
   workspace: Workspace;
   view: MapView;
@@ -1855,6 +2442,8 @@ function GraphCanvas({
   setSelectedReasonId: (id: string) => void;
   drawerOpen: boolean;
   setDrawerOpen: (open: boolean) => void;
+  keybindings: ShortcutMap;
+  shortcutsDisabled: boolean;
 }) {
   const canvasSectionRef = useRef<HTMLElement>(null);
   const [flow, setFlow] = useState<ReactFlowInstance<CanvasFlowNode, Edge> | null>(null);
@@ -2653,8 +3242,126 @@ function GraphCanvas({
 	      event.stopPropagation();
 	      handleCanvasNodeClick(nodeId);
 	    },
-		    [canvasTool, handleCanvasNodeClick]
+	    [canvasTool, handleCanvasNodeClick]
 		  );
+
+  const runCanvasShortcut = useCallback(
+    (actionId: ShortcutId) => {
+      if (actionId === "canvasSelect") {
+        setCanvasTool("select");
+        setArrowDraftSourceId("");
+        onNotice("Select tool enabled.");
+        return true;
+      }
+      if (actionId === "canvasConnect") {
+        setCanvasTool("arrow");
+        setSelectedManualNodeId("");
+        setArrowDraftSourceId("");
+        onNotice("Connect tool enabled.");
+        return true;
+      }
+      if (actionId === "canvasCancel") {
+        setCanvasTool("select");
+        setArrowDraftSourceId("");
+        setCanvasContextMenu(null);
+        setOpenCanvasMenu(null);
+        setInlineBranchOpen(false);
+        setBranchPickerOpen(false);
+        setSelectedManualNodeId("");
+        if (drawerOpen) {
+          setDrawerOpen(false);
+          setView("branch");
+        }
+        onNotice("Canvas action cancelled.");
+        return true;
+      }
+      if (actionId === "canvasZoomIn") {
+        flow?.zoomIn();
+        return Boolean(flow);
+      }
+      if (actionId === "canvasZoomOut") {
+        flow?.zoomOut();
+        return Boolean(flow);
+      }
+      if (actionId === "canvasFit") {
+        flow?.fitView();
+        return Boolean(flow);
+      }
+      if (actionId === "canvasCopy") {
+        if (!selectedManualNodeId) {
+          onNotice("Select a canvas element first.");
+          return true;
+        }
+        void copyCanvasNodeText(selectedManualNodeId);
+        return true;
+      }
+      if (actionId === "canvasDuplicate") {
+        if (!selectedManualNodeId) {
+          onNotice("Select a canvas element first.");
+          return true;
+        }
+        duplicateManualNode(selectedManualNodeId);
+        return true;
+      }
+      if (actionId === "canvasDelete") {
+        if (!selectedManualNodeId) {
+          onNotice("Select a canvas element first.");
+          return true;
+        }
+        deleteManualNode(selectedManualNodeId);
+        return true;
+      }
+
+      const addNodeByShortcut: Partial<Record<ShortcutId, ManualCanvasKind>> = {
+        addBox: "box",
+        addText: "text",
+        addNote: "note",
+        addDecision: "decision",
+        addConnector: "connector",
+        addSupport: "support",
+        addOppose: "oppose",
+        addSource: "source",
+        addQuestion: "question",
+        addComment: "comment",
+        addHighlight: "highlight",
+      };
+      const kind = addNodeByShortcut[actionId];
+      if (!kind) return false;
+      addManualNode(kind);
+      return true;
+    },
+    [
+      addManualNode,
+      copyCanvasNodeText,
+      deleteManualNode,
+      drawerOpen,
+      duplicateManualNode,
+      flow,
+      onNotice,
+      selectedManualNodeId,
+      setArrowDraftSourceId,
+      setCanvasTool,
+      setDrawerOpen,
+      setSelectedManualNodeId,
+      setView,
+    ]
+  );
+
+  useEffect(() => {
+    if (shortcutsDisabled) return undefined;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (isEditableEventTarget(event.target)) return;
+      const actionId = getShortcutAction(event, keybindings, canvasShortcutIds);
+      if (!actionId) return;
+      if (!runCanvasShortcut(actionId)) return;
+      event.preventDefault();
+      event.stopPropagation();
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [keybindings, runCanvasShortcut, shortcutsDisabled]);
 
 			  return (
 	    <section
@@ -2705,7 +3412,10 @@ function GraphCanvas({
             }
           }}
 		          onNodeContextMenu={openNodeContextMenu}
-		          onPaneClick={() => setCanvasContextMenu(null)}
+		          onPaneClick={() => {
+		            setCanvasContextMenu(null);
+		            if (canvasTool !== "arrow") setSelectedManualNodeId("");
+		          }}
 	          panOnDrag
           proOptions={{ hideAttribution: true }}
         >
@@ -3459,12 +4169,29 @@ function GraphCanvas({
           <div
             className="pointer-events-auto mt-3 rounded-lg border border-ink/10 bg-white/95 p-4 shadow-[0_18px_48px_rgba(16,16,14,0.13)] backdrop-blur"
             data-canvas-avoid="true"
+            onKeyDown={(event) => {
+              if (event.key !== "Escape") return;
+              event.preventDefault();
+              event.stopPropagation();
+              setSelectedManualNodeId("");
+            }}
           >
             <div className="mb-3 flex items-center justify-between">
               <p className="text-sm font-semibold">Edit {manualCanvasKindLabel(selectedManualNode.kind)}</p>
-              <span className="rounded-md border border-ink/10 px-2 py-1 text-[11px] font-bold uppercase tracking-[0.06em] text-ink/45">
-                {manualCanvasKindLabel(selectedManualNode.kind)}
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="rounded-md border border-ink/10 px-2 py-1 text-[11px] font-bold uppercase tracking-[0.06em] text-ink/45">
+                  {manualCanvasKindLabel(selectedManualNode.kind)}
+                </span>
+                <button
+                  aria-label="Close properties"
+                  className="rounded-md border border-ink/10 p-1.5 text-ink/45 transition hover:bg-ink/[0.04] hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5d855e]/35"
+                  onClick={() => setSelectedManualNodeId("")}
+                  title="Close properties"
+                  type="button"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
             </div>
             <label className="block" htmlFor={`canvas-node-title-${selectedManualNode.id}`}>
               <span className="text-xs font-semibold text-ink/45">Title</span>
@@ -4063,7 +4790,7 @@ function TopBar({
   const [claimMenuOpen, setClaimMenuOpen] = useState(false);
   const claimMenuRef = useRef<HTMLDivElement>(null);
   const exportOptions: Array<{ format: ExportFormat; label: string; detail: string }> = [
-    { format: "pdf", label: "PDF / Print", detail: "Readable report for class submission" },
+    { format: "pdf", label: "PDF", detail: "Downloadable report for class submission" },
     { format: "docx", label: "Word .docx", detail: "Editable written report" },
     { format: "xlsx", label: "Excel .xlsx", detail: "Spreadsheet of arguments and sources" },
     { format: "csv", label: "CSV", detail: "Simple spreadsheet import" },
@@ -4263,6 +4990,7 @@ function SettingsModal({
   error,
   onClose,
   onRefresh,
+  onOpenKeybindings,
   onSave,
 }: {
   open: boolean;
@@ -4272,6 +5000,7 @@ function SettingsModal({
   error: string;
   onClose: () => void;
   onRefresh: () => void;
+  onOpenKeybindings: () => void;
   onSave: (payload: {
     reviewEngine: ReviewEngine;
     openaiApiKey?: string;
@@ -4319,8 +5048,8 @@ function SettingsModal({
       className="fixed inset-0 z-[200] flex items-center justify-center bg-ink/32 px-4 py-6 backdrop-blur-sm"
       role="dialog"
     >
-      <div className="max-h-full w-full max-w-3xl overflow-hidden rounded-xl border border-ink/10 bg-[#fffdf7] shadow-[0_28px_90px_rgba(16,16,14,0.24)]">
-        <div className="flex items-start justify-between gap-5 border-b border-ink/8 px-5 py-4 md:px-6">
+      <div className="flex max-h-[calc(100vh-3rem)] w-full max-w-3xl flex-col overflow-hidden rounded-xl border border-ink/10 bg-[#fffdf7] shadow-[0_28px_90px_rgba(16,16,14,0.24)]">
+        <div className="flex shrink-0 items-start justify-between gap-5 border-b border-ink/8 px-5 py-4 md:px-6">
           <div>
             <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4f8256]">
               Runtime settings
@@ -4339,7 +5068,7 @@ function SettingsModal({
           </button>
         </div>
 
-        <div className="max-h-[calc(100vh-180px)] overflow-y-auto px-5 py-5 md:px-6">
+        <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 md:px-6">
           <div className="grid gap-4 md:grid-cols-3">
             {[
               {
@@ -4383,6 +5112,25 @@ function SettingsModal({
               </button>
             ))}
           </div>
+
+          <button
+            className="mt-5 flex w-full items-center justify-between gap-4 rounded-lg border border-[#5d855e]/24 bg-[#eef6eb] px-5 py-4 text-left text-[#31583a] shadow-[0_12px_30px_rgba(76,125,72,0.08)] transition hover:-translate-y-0.5 hover:border-[#5d855e]/38 hover:bg-[#e4f0df] hover:shadow-[0_16px_36px_rgba(76,125,72,0.12)]"
+            onClick={onOpenKeybindings}
+            type="button"
+          >
+            <span className="flex min-w-0 items-center gap-4">
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-[#5d855e]/22 bg-white/75">
+                <Keyboard className="h-6 w-6" />
+              </span>
+              <span className="min-w-0">
+                <span className="block text-base font-bold">Keybinds</span>
+                <span className="mt-1 block text-sm font-semibold leading-5 text-[#31583a]/68">
+                  Customize keyboard shortcuts for app actions and canvas tools.
+                </span>
+              </span>
+            </span>
+            <ChevronRight className="h-5 w-5 shrink-0 opacity-70" />
+          </button>
 
           <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_0.9fr]">
             <section className="rounded-lg border border-ink/10 bg-white/72 p-4">
@@ -4579,7 +5327,7 @@ function SettingsModal({
           )}
         </div>
 
-        <div className="flex flex-wrap items-center justify-end gap-3 border-t border-ink/8 bg-white/64 px-5 py-4 md:px-6">
+        <div className="flex shrink-0 flex-wrap items-center justify-end gap-3 border-t border-ink/8 bg-white/64 px-5 py-4 md:px-6">
           <button
             className="rounded-lg border border-ink/10 bg-white px-4 py-2.5 text-sm font-semibold text-ink/58 transition hover:bg-ink/[0.035] hover:text-ink"
             onClick={onClose}
@@ -4611,6 +5359,146 @@ function SettingsModal({
   );
 }
 
+function KeybindingsModal({
+  open,
+  bindings,
+  onChange,
+  onClose,
+  onReset,
+}: {
+  open: boolean;
+  bindings: ShortcutMap;
+  onChange: (actionId: ShortcutId, shortcut: string) => void;
+  onClose: () => void;
+  onReset: () => void;
+}) {
+  const [listeningActionId, setListeningActionId] = useState<ShortcutId | null>(null);
+
+  useEffect(() => {
+    if (!open) setListeningActionId(null);
+  }, [open]);
+
+  if (!open) return null;
+
+  return (
+    <div
+      aria-modal="true"
+      className="fixed inset-0 z-[220] flex items-center justify-center bg-ink/36 px-4 py-6 backdrop-blur-sm"
+      role="dialog"
+    >
+      <div className="flex max-h-[calc(100vh-3rem)] w-full max-w-4xl flex-col overflow-hidden rounded-xl border border-ink/10 bg-[#fffdf7] shadow-[0_28px_90px_rgba(16,16,14,0.25)]">
+        <div className="shrink-0 flex items-start justify-between gap-5 border-b border-ink/8 px-5 py-4 md:px-6">
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4f8256]">
+              Settings
+            </p>
+            <h2 className="mt-1 text-xl font-semibold tracking-[-0.01em]">
+              Keybinds
+            </h2>
+            <p className="mt-1 text-xs font-semibold leading-5 text-ink/48">
+              Click a shortcut, press the new key combination, and duplicates are cleared automatically.
+            </p>
+          </div>
+          <button
+            aria-label="Close keybinds"
+            className="rounded-md p-2 text-ink/45 transition hover:bg-ink/[0.04] hover:text-ink"
+            onClick={onClose}
+            type="button"
+          >
+            <Minus className="h-4 w-4" />
+          </button>
+        </div>
+
+        <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 md:px-6">
+          <div className="grid gap-4 lg:grid-cols-2">
+            {shortcutCategoryOrder.map((category) => {
+              const definitions = shortcutDefinitions.filter((definition) => definition.category === category);
+              return (
+                <section className="rounded-lg border border-ink/10 bg-white/72 p-4" key={category}>
+                  <div className="mb-3 flex items-center justify-between gap-3">
+                    <h3 className="text-sm font-semibold">{category}</h3>
+                    <span className="rounded-md border border-ink/8 bg-[#f7f4ec] px-2 py-1 text-[11px] font-bold text-ink/42">
+                      {definitions.length}
+                    </span>
+                  </div>
+                  <div className="space-y-2">
+                    {definitions.map((definition) => {
+                      const listening = listeningActionId === definition.id;
+                      return (
+                        <div
+                          className="grid grid-cols-[1fr_auto_auto] items-center gap-2 rounded-md border border-ink/8 bg-white px-3 py-2"
+                          key={definition.id}
+                        >
+                          <div className="min-w-0">
+                            <p className="truncate text-sm font-semibold">{definition.label}</p>
+                            <p className="mt-0.5 text-[11px] font-semibold text-ink/42">
+                              Default {formatShortcut(definition.defaultShortcut)}
+                            </p>
+                          </div>
+                          <button
+                            aria-label={`Change ${definition.label} keybind`}
+                            className={classNames(
+                              "min-w-[116px] rounded-md border px-3 py-2 text-center text-xs font-bold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5d855e]/35",
+                              listening
+                                ? "border-[#5d855e] bg-[#e9f2e6] text-[#31583a]"
+                                : "border-ink/10 bg-[#f7f4ec] text-ink/65 hover:bg-[#eef6eb] hover:text-[#31583a]"
+                            )}
+                            onBlur={() => setListeningActionId((current) => (current === definition.id ? null : current))}
+                            onClick={() => setListeningActionId(definition.id)}
+                            onKeyDown={(event) => {
+                              if (!listening) return;
+                              event.preventDefault();
+                              event.stopPropagation();
+                              const shortcut = shortcutFromKeyboardEvent(event.nativeEvent);
+                              if (!shortcut) return;
+                              onChange(definition.id, shortcut);
+                              setListeningActionId(null);
+                            }}
+                            type="button"
+                          >
+                            {listening ? "Press keys" : formatShortcut(bindings[definition.id])}
+                          </button>
+                          <button
+                            aria-label={`Clear ${definition.label} keybind`}
+                            className="rounded-md p-2 text-ink/38 transition hover:bg-[#fff0ea] hover:text-[#b94736]"
+                            onClick={() => onChange(definition.id, "")}
+                            type="button"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </section>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="shrink-0 flex flex-wrap items-center justify-between gap-3 border-t border-ink/8 bg-white/64 px-5 py-4 md:px-6">
+          <button
+            className="inline-flex items-center gap-2 rounded-lg border border-ink/10 bg-white px-4 py-2.5 text-sm font-semibold text-ink/58 transition hover:bg-ink/[0.035] hover:text-ink"
+            onClick={onReset}
+            type="button"
+          >
+            <RefreshCcw className="h-4 w-4" />
+            Reset defaults
+          </button>
+          <button
+            className="inline-flex items-center gap-2 rounded-lg bg-[#174b2a] px-4 py-2.5 text-sm font-semibold text-white shadow-[0_14px_34px_rgba(23,75,42,0.22)] transition hover:-translate-y-0.5"
+            onClick={onClose}
+            type="button"
+          >
+            <Check className="h-4 w-4" />
+            Done
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ClaimPanel({
   open,
   onToggleOpen,
@@ -4625,7 +5513,6 @@ function ClaimPanel({
   setArticleText,
   onRun,
   isRunning,
-  runProgress,
   view,
   setView,
   apiError,
@@ -4657,7 +5544,6 @@ function ClaimPanel({
   setArticleText: (value: string) => void;
   onRun: () => void;
   isRunning: boolean;
-  runProgress: RunProgress | null;
   view: MapView;
   setView: (view: MapView) => void;
   apiError: string;
@@ -4910,9 +5796,6 @@ function ClaimPanel({
         {isRunning ? <Loader2 className="h-5 w-5 animate-spin" /> : <Network className="h-5 w-5" />}
         {isRunning ? "Building map" : "Build map"}
       </button>
-
-      {runProgress && <BuildProgressPanel progress={runProgress} />}
-
       {apiError && (
         <div className="mt-4 rounded-lg border border-[#e76e57]/25 bg-[#fff0ea] p-3 text-xs font-semibold leading-5 text-[#b94736]">
           {apiError}
@@ -5051,24 +5934,39 @@ function ClaimPanel({
   );
 }
 
+function BuildProgressOverlay({ progress }: { progress: RunProgress }) {
+  return (
+    <div
+      aria-live="polite"
+      className="fixed inset-0 z-[60] flex items-center justify-center overflow-y-auto bg-ink/[0.18] px-4 py-6 backdrop-blur-[12px]"
+      role="status"
+    >
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(255,253,247,0.42),transparent_36%),linear-gradient(180deg,rgba(244,239,227,0.12),rgba(16,16,14,0.16))]" />
+      <BuildProgressPanel progress={progress} />
+    </div>
+  );
+}
+
 function BuildProgressPanel({ progress }: { progress: RunProgress }) {
   const activeIndex = runProgressSteps.findIndex((step) => step.id === progress.stepId);
   const boundedProgress = Math.min(100, Math.max(0, progress.progress));
 
   return (
-    <div className="mt-4 rounded-lg border border-ink/10 bg-white/58 p-4 shadow-[0_18px_48px_rgba(16,16,14,0.08)] backdrop-blur-md">
-      <div className="mb-3 flex items-center justify-between gap-3">
+    <div className="relative z-10 w-[min(92vw,550px)] overflow-hidden rounded-[18px] border border-white/[0.55] bg-[#fffdf7]/[0.86] p-7 shadow-[0_28px_90px_rgba(16,16,14,0.24)] ring-1 ring-ink/5 backdrop-blur-xl sm:p-8">
+      <div className="mb-6 flex items-start justify-between gap-4">
         <div>
-          <p className="text-sm font-semibold">
+          <p className="text-2xl font-bold leading-tight text-ink">
             {progress.status === "complete"
               ? "Map ready"
               : progress.status === "error"
                 ? "Build interrupted"
                 : "Building map"}
           </p>
-          <p className="mt-1 text-xs font-medium leading-5 text-ink/55">{progress.detail}</p>
+          <p className="mt-3 max-w-[360px] text-lg font-semibold leading-8 text-ink/58">
+            {progress.detail}
+          </p>
         </div>
-        <span className="shrink-0 rounded-md border border-ink/8 bg-white/70 px-2 py-1 text-xs font-bold text-ink/55">
+        <span className="shrink-0 rounded-xl border border-[#dfe5ef] bg-white/80 px-4 py-2 text-xl font-bold text-ink/55 shadow-[0_10px_26px_rgba(16,16,14,0.06)]">
           {Math.round(boundedProgress)}%
         </span>
       </div>
@@ -5077,7 +5975,7 @@ function BuildProgressPanel({ progress }: { progress: RunProgress }) {
         aria-valuemax={100}
         aria-valuemin={0}
         aria-valuenow={Math.round(boundedProgress)}
-        className="h-2 overflow-hidden rounded-full bg-ink/10"
+        className="h-4 overflow-hidden rounded-full bg-ink/10"
         role="progressbar"
       >
         <div
@@ -5088,7 +5986,7 @@ function BuildProgressPanel({ progress }: { progress: RunProgress }) {
           style={{ width: `${boundedProgress}%` }}
         />
       </div>
-      <div className="mt-4 space-y-2">
+      <div className="mt-7 space-y-4">
         {runProgressSteps.map((step, index) => {
           const isComplete = progress.status === "complete" || index < activeIndex;
           const isActive = index === activeIndex && progress.status === "running";
@@ -5097,8 +5995,8 @@ function BuildProgressPanel({ progress }: { progress: RunProgress }) {
           return (
             <div
               className={classNames(
-                "flex items-start gap-3 rounded-md px-2 py-1.5 text-xs font-semibold transition",
-                isActive && "bg-[#e9f2e6]/80 text-[#31583a]",
+                "flex items-start gap-5 rounded-xl px-4 py-3 text-lg font-bold transition",
+                isActive && "bg-[#e9f2e6]/82 text-[#31583a]",
                 isError && "bg-[#fff0ea] text-[#b94736]",
                 !isActive && !isError && (isComplete ? "text-ink/68" : "text-ink/38")
               )}
@@ -5106,7 +6004,7 @@ function BuildProgressPanel({ progress }: { progress: RunProgress }) {
             >
               <span
                 className={classNames(
-                  "mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border",
+                  "mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border",
                   isComplete && "border-[#4f8256] bg-[#4f8256] text-white",
                   isActive && "border-[#4f8256] bg-white text-[#4f8256]",
                   isError && "border-[#d34f32] bg-[#d34f32] text-white",
@@ -5114,17 +6012,17 @@ function BuildProgressPanel({ progress }: { progress: RunProgress }) {
                 )}
               >
                 {isComplete ? (
-                  <Check className="h-3 w-3" />
+                  <Check className="h-5 w-5" />
                 ) : isActive ? (
-                  <Loader2 className="h-3 w-3 animate-spin" />
+                  <Loader2 className="h-5 w-5 animate-spin" />
                 ) : (
-                  <CircleDot className="h-2.5 w-2.5" />
+                  <CircleDot className="h-4 w-4" />
                 )}
               </span>
               <span>
                 <span className="block">{step.label}</span>
                 {(isActive || isError) && (
-                  <span className="mt-0.5 block text-[11px] font-medium leading-4 opacity-75">
+                  <span className="mt-2 block max-w-[360px] text-base font-semibold leading-7 opacity-75">
                     {step.detail}
                   </span>
                 )}
@@ -5376,6 +6274,8 @@ export function App() {
   const [historyError, setHistoryError] = useState("");
   const [notice, setNotice] = useState("");
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [keybindingsOpen, setKeybindingsOpen] = useState(false);
+  const [keybindings, setKeybindings] = useState<ShortcutMap>(() => loadShortcutMap());
   const [runtimeSettings, setRuntimeSettings] = useState<RuntimeSettings | null>(null);
   const [settingsError, setSettingsError] = useState("");
   const [isSettingsLoading, setIsSettingsLoading] = useState(false);
@@ -5408,6 +6308,7 @@ export function App() {
     return makeWorkspaceFromTopic(activeTopic, query);
   }, [activeTopic, isLiveArtifact, query]);
   const activeCanvasId = canvasIdForTopic(activeTopic, isLiveArtifact);
+  const shortcutsDisabled = settingsOpen || keybindingsOpen;
 
   const filteredWorkspace = useMemo(
     () => filterWorkspace(workspace, activeFilter),
@@ -5454,6 +6355,22 @@ export function App() {
     if (noticeTimerRef.current) clearTimeout(noticeTimerRef.current);
     noticeTimerRef.current = setTimeout(() => setNotice(""), 2400);
   }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem(shortcutStorageKey, JSON.stringify(keybindings));
+  }, [keybindings]);
+
+  const updateKeybinding = useCallback(
+    (actionId: ShortcutId, shortcut: string) => {
+      setKeybindings((current) => assignShortcutBinding(current, actionId, shortcut));
+    },
+    []
+  );
+
+  const resetKeybindings = useCallback(() => {
+    setKeybindings(defaultShortcutMap());
+    showNotice("Keybinds reset to defaults.");
+  }, [showNotice]);
 
   const clearRunProgressTimers = useCallback(() => {
     runProgressTimersRef.current.forEach((timer) => clearTimeout(timer));
@@ -5953,16 +6870,96 @@ export function App() {
       return;
     }
 
-    const printWindow = window.open("", "_blank", "noopener,noreferrer");
-    if (!printWindow) {
-      showNotice("PDF export blocked. Allow pop-ups, then choose Export > PDF / Print again.");
-      return;
-    }
-    printWindow.document.open();
-    printWindow.document.write(buildPrintReportHtml(workspace, activeTopic));
-    printWindow.document.close();
-    showNotice("Print report opened. Choose Save as PDF in the print dialog.");
+    downloadBlob(
+      new Blob([buildPdf(workspace, activeTopic)], {
+        type: "application/pdf",
+      }),
+      `${filenameBase}.pdf`
+    );
+    showNotice("PDF report downloaded.");
   }
+
+  const runAppShortcut = useCallback(
+    (actionId: ShortcutId) => {
+      if (actionId === "saveCanvas") {
+        if (!isCanvasSaving) void saveCanvas();
+        return true;
+      }
+      if (actionId === "undoCanvas") {
+        if (canvasUndoStack.length) undoCanvas();
+        return true;
+      }
+      if (actionId === "redoCanvas") {
+        if (canvasRedoStack.length) redoCanvas();
+        return true;
+      }
+      if (actionId === "runReview") {
+        if (!isRunning) void run();
+        return true;
+      }
+      if (actionId === "focusClaim") {
+        setClaimPanelOpen(true);
+        window.setTimeout(() => queryInputRef.current?.focus(), 0);
+        return true;
+      }
+      if (actionId === "openSettings") {
+        setSettingsOpen(true);
+        void refreshRuntimeSettings();
+        return true;
+      }
+      if (actionId === "openKeybindings") {
+        setKeybindingsOpen(true);
+        return true;
+      }
+      if (actionId === "viewOverview") {
+        setDrawerOpen(false);
+        setView("overview");
+        return true;
+      }
+      if (actionId === "viewBranch") {
+        setDrawerOpen(false);
+        setView("branch");
+        return true;
+      }
+      if (actionId === "viewEvidence") {
+        setDrawerOpen(true);
+        setView("evidence");
+        return true;
+      }
+      return false;
+    },
+    [
+      canvasRedoStack.length,
+      canvasUndoStack.length,
+      isCanvasSaving,
+      isRunning,
+      redoCanvas,
+      refreshRuntimeSettings,
+      undoCanvas,
+    ]
+  );
+
+  useEffect(() => {
+    if (shortcutsDisabled) return undefined;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const actionId = getShortcutAction(event, keybindings, appShortcutIds);
+      if (!actionId) return;
+      const editable = isEditableEventTarget(event.target);
+      if (
+        editable &&
+        !["saveCanvas", "runReview", "focusClaim", "openSettings", "openKeybindings"].includes(actionId)
+      ) {
+        return;
+      }
+      if (!runAppShortcut(actionId)) return;
+      event.preventDefault();
+      event.stopPropagation();
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [keybindings, runAppShortcut, shortcutsDisabled]);
 
   return (
     <main className="min-h-screen w-full overflow-x-hidden bg-[#f7f4ec] font-sans text-ink lg:h-screen lg:min-h-[760px] lg:overflow-hidden">
@@ -6006,7 +7003,6 @@ export function App() {
           preSearchFilters={preSearchFilters}
           query={query}
           queryInputRef={queryInputRef}
-          runProgress={runProgress}
           setArticleText={setArticleText}
           setArticleUrl={setArticleUrl}
           setGroupSimilar={setGroupSimilar}
@@ -6041,6 +7037,7 @@ export function App() {
             canvasVersions={canvasVersions}
             isCanvasSaving={isCanvasSaving}
             isCanvasVersionsLoading={isCanvasVersionsLoading}
+            keybindings={keybindings}
             manualCanvasArrows={manualCanvasArrows}
             manualCanvasNodes={manualCanvasNodes}
             onCanvasDirty={markCanvasDirty}
@@ -6062,11 +7059,13 @@ export function App() {
             setSelectedReasonId={setSelectedReasonId}
             setView={setView}
             showCounts={showCounts}
+            shortcutsDisabled={shortcutsDisabled}
             view={view}
             workspace={filteredWorkspace}
           />
         </div>
       </div>
+      {runProgress && <BuildProgressOverlay progress={runProgress} />}
       {notice && (
         <div className="fixed bottom-5 right-5 z-50 rounded-lg border border-ink/10 bg-white px-4 py-3 text-sm font-semibold text-ink shadow-[0_18px_52px_rgba(16,16,14,0.18)]">
           {notice}
@@ -6077,10 +7076,21 @@ export function App() {
         isLoading={isSettingsLoading}
         isSaving={isSettingsSaving}
         onClose={() => setSettingsOpen(false)}
+        onOpenKeybindings={() => {
+          setSettingsOpen(false);
+          setKeybindingsOpen(true);
+        }}
         onRefresh={refreshRuntimeSettings}
         onSave={saveRuntimeSettings}
         open={settingsOpen}
         settings={runtimeSettings}
+      />
+      <KeybindingsModal
+        bindings={keybindings}
+        onChange={updateKeybinding}
+        onClose={() => setKeybindingsOpen(false)}
+        onReset={resetKeybindings}
+        open={keybindingsOpen}
       />
     </main>
   );

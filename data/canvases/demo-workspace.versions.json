@@ -728,6 +728,76 @@
         ],
         "updatedAt": "2026-06-24T19:28:19.772Z"
       }
+    },
+    {
+      "id": "v-9-20260625092710203",
+      "versionNumber": 9,
+      "createdAt": "2026-06-25T09:27:10.203Z",
+      "label": "Version 9",
+      "summary": "0 elements · 0 arrows",
+      "canvas": {
+        "id": "demo-workspace",
+        "topicId": "breathwork-anxiety",
+        "query": "Daily magnesium improves sleep quality.",
+        "view": "overview",
+        "selectedBranchId": "support-sleep-latency",
+        "selectedReasonId": "faster-onset",
+        "nodes": [],
+        "arrows": [],
+        "updatedAt": "2026-06-25T09:27:10.203Z"
+      }
+    },
+    {
+      "id": "v-10-20260625092711975",
+      "versionNumber": 10,
+      "createdAt": "2026-06-25T09:27:11.975Z",
+      "label": "Version 10",
+      "summary": "0 elements · 0 arrows",
+      "canvas": {
+        "id": "demo-workspace",
+        "topicId": "breathwork-anxiety",
+        "query": "Daily magnesium improves sleep quality.",
+        "view": "overview",
+        "selectedBranchId": "support-sleep-latency",
+        "selectedReasonId": "faster-onset",
+        "nodes": [],
+        "arrows": [],
+        "updatedAt": "2026-06-25T09:27:11.975Z"
+      }
+    },
+    {
+      "id": "v-11-20260625092948284",
+      "versionNumber": 11,
+      "createdAt": "2026-06-25T09:29:48.284Z",
+      "label": "Version 11",
+      "summary": "1 element · 1 arrow",
+      "canvas": {
+        "id": "demo-workspace",
+        "topicId": "breathwork-anxiety",
+        "query": "Daily magnesium improves sleep quality.",
+        "view": "overview",
+        "selectedBranchId": "support-sleep-latency",
+        "selectedReasonId": "faster-onset",
+        "nodes": [
+          {
+            "id": "manual-support-1782379780110",
+            "kind": "support",
+            "title": "Supporting proof",
+            "body": "Summarize evidence that supports the initial claim.",
+            "color": "green",
+            "x": -137.16437813663111,
+            "y": 324.10370679192556
+          }
+        ],
+        "arrows": [
+          {
+            "id": "manual-arrow-1782379786211",
+            "source": "manual-support-1782379780110",
+            "target": "support-sleep-latency"
+          }
+        ],
+        "updatedAt": "2026-06-25T09:29:48.284Z"
+      }
     }
   ]
 }

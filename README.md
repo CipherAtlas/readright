@@ -8,6 +8,8 @@ ReadRight is a local-first prototype for checking health and mental-health claim
 
 It turns a topic, claim, or article into a visual evidence map so a user can see what supports the claim, what argues against it, which sources were used, and where the evidence is uncertain.
 
+The name is a deliberate play on "read/write": ReadRight helps users read the right evidence first, then use that grounded understanding to write stronger essays, summaries, and reviews.
+
 ## What It Does
 
 - Builds structured evidence reviews using the `mhcif-0.3-codex` framework.
